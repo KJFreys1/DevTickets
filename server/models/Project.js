@@ -1,55 +1,48 @@
 const mongoose = require("mongoose")
 const Schema = mongoose.Schema
 
-const userSchema = new Schema({
+const projectSchema = new Schema({
     name: {
         type: String,
         required: true
     },
-    email: {
+    description: {
         type: String,
         required: true
     },
-    password: {
-        type: String,
-        required: true
-    },
-    projects_managed: [
+    managers: [
         {
-            ref: "Project",
+            ref: "User",
             type: mongoose.Schema.Types.ObjectId
         }
     ],
-    projects_joined: [
+    developers: [
         {
-            ref: "Project",
+            ref: "User",
             type: mongoose.Schema.Types.ObjectId
         }
     ],
-    data_joined: {
+    tickets: [
+        {
+            ref: "Ticket",
+            type: mongoose.Schema.Types.ObjectId
+        }
+    ],
+    feed: [
+        {
+            ref: "Comment",
+            type: mongoose.Schema.Types.ObjectId
+        },
+        {
+            ref: "Event",
+            type: mongoose.Schema.Types.ObjectId
+        }
+    ],
+    date: {
         type: Date,
         default: Date.now()
-    },
-    tickets_assigned: [
-        {
-            ref: "Tickets",
-            type: mongoose.Schema.Types.ObjectId
-        }
-    ],
-    tickets_issued: [
-        {
-            ref: "Tickets",
-            type: mongoose.Schema.Types.ObjectId
-        }
-    ],
-    message_groups: [
-        {
-            ref: "MessageGroup",
-            type: mongoose.Schema.Types.ObjectId
-        }
-    ]
+    }
 })
 
-const User = mongoose.model("User", userSchema)
-
-module.exports = User
+const Project = mongoose.model('Project', projectSchema)
+module.exports = Project
