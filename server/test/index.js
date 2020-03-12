@@ -4,37 +4,9 @@ const http = require("chai-http")
 
 chai.use(http)
 
-describe("User model", () => {
-    let User
-    let app
-
-    before(done => {
-        User = require("../models/User")
-        app = require("../server")
-        done()
-    })
-
-    beforeEach(done => {
-        User.deleteMany({}).then(() => {
-            done()
-        })
-    })
-
-    afterEach(done => {
-        User.deleteMany({}).then(() => {
-            done()
-        })
-    })
-
-    it("should have User model", done => {
-        expect(User).not.to.be.undefined
-        done()
-    })
-})
-
 describe("Routes", () => {
     this.timeout = 2000
-
+    
     let User
     let Ticket
     let Project
@@ -42,7 +14,7 @@ describe("Routes", () => {
     let Message
     let Event
     let Comment
-    let app
+    let app = require("../server")
 
     before(done => {
         User = require("../models/User")
@@ -52,7 +24,6 @@ describe("Routes", () => {
         Message = require("../models/Message")
         Event = require("../models/Event")
         Comment = require("../models/Comment")
-        app = require("../server")
 
         User.deleteMany({}).then(() => {
             Ticket.deleteMany({}).then(() => {
@@ -99,7 +70,7 @@ describe("Routes", () => {
                 chai.request(app)
                     .get("/user")
                     .end((err, res) => {
-                        expect(res.body[0].length).to.not.equal(0)
+                        expect(res.body.length).to.not.equal(0)
                         expect(res.body[0].name).to.contain(user.name)
                         expect(res.body[0].email).to.contain(user.email)
                         if (err) console.log(err)

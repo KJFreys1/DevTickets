@@ -4,7 +4,8 @@
   "description": "Server for DevTickets",
   "main": "server.js",
   "scripts": {
-    "test": "./node_modules/mocha/bin/mocha --exit test/index.js"
+    "test": "./node_modules/mocha/bin/mocha --exit test/index.js",
+    "testproj": "./node_modules/mocha/bin/mocha --exit test/projects.js"
   },
   "author": "Kyle Freyermuth",
   "license": "ISC",
