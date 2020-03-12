@@ -1,4 +1,4 @@
-const mongoose = require("mongoose")
+const mongoose = require("../db/connection")
 const Schema = mongoose.Schema
 
 const userSchema = new Schema({
@@ -26,7 +26,7 @@ const userSchema = new Schema({
             type: mongoose.Schema.Types.ObjectId
         }
     ],
-    data_joined: {
+    date_joined: {
         type: Date,
         default: Date.now()
     },
