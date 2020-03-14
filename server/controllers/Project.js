@@ -59,7 +59,7 @@ router.put("/:pid", (req, res) => {
 })
 
 //@route        /project/developer/:uid/:pid
-//@desc         REMOVE user from project developer array
+//@desc         REMOVE user from project
 router.put("/remove/:uid/:pid", (req, res) => {
     User.findById(req.params.uid).then(user => {
         Project.findById(req.params.pid).then(proj => {
@@ -79,6 +79,23 @@ router.put("/remove/:uid/:pid", (req, res) => {
         })
     })
 })
+
+//@route        /project/developer/:uid/:pid
+//@desc         PUT user into project developer array
+router.put("/developer/:uid/:pid", (req, res) => {
+    User.findById(req.params.uid).then(user => {
+        Project.findById(req.params.pid).then(proj => {
+            user.projects_joined.push(proj._id)
+            user.save().then(() => {
+                proj.developers.push(user._id)
+                proj.save().then(() => {
+                    res.json(proj)
+                })
+            })
+        })
+    })
+})
+
 
 //@route        /project/:pid
 //@desc         DELETE specific route

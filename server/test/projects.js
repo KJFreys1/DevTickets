@@ -11,6 +11,7 @@ describe("Routes for Project", () => {
 
     let testUID
     let testPID
+    let testDevID
 
     before(function(done) {
         this.timeout(4000)
@@ -45,8 +46,15 @@ describe("Routes for Project", () => {
                     description: "PROJ TEST"
                 })
             ]).then(() => {
-                user.save()
-                done()
+                user.save().then(() => {
+                    User.create({
+                        name: "put test for proj",
+                        email: "t@t",
+                        password: "123"
+                    }).then(() => {
+                        done()
+                    })
+                })
             })
         })
     })
@@ -134,13 +142,27 @@ describe("Routes for Project", () => {
             })
         })
 
+        it("should add developer to a project", done => {
+            User.findOne({ name: "put test for proj" }).then(user => {
+                Project.findOne({ name: "test proj two" }).then(proj => {
+                    testDevID = user._id
+                    chai.request(app)
+                        .put(`/project/developer/${testDevID}/${proj._id}`)
+                        .then(res => {
+                            expect(res.body.developers.length).to.equal(2)
+                            done()
+                        })
+                })
+            })
+        })
+
         it("should remove user from a project", done => {
             Project.findOne({ name: "test proj two"}).then(proj => {
-                expect(proj.developers.length).to.equal(1)
+                expect(proj.developers.length).to.equal(2)
                 chai.request(app)
                     .put(`/project/remove/${testUID}/${proj._id}`)
                     .then(res => {
-                        expect(res.body.developers.length).to.equal(0)
+                        expect(res.body.developers.length).to.equal(1)
                         done()
                     })
             })
