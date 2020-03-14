@@ -10,6 +10,7 @@ describe("Routes for Project", () => {
     let app
 
     let testUID
+    let testPID
 
     before(function(done) {
         this.timeout(4000)
@@ -76,9 +77,9 @@ describe("Routes for Project", () => {
                     .get(path)
                     .then(res => {
                         expect(res.body.length).to.equal(2)
-                        expect(res.body[0].name).to.contain("test proj one")
+                        expect(res.body[0].name).to.equal("test proj one")
                         expect(res.body[0].managers[0]).to.contain(user._id)
-                        expect(res.body[1].name).to.contain("test proj two")
+                        expect(res.body[1].name).to.equal("test proj two")
                         expect(res.body[1].developers[0]).to.contain(user._id)
                         done()
                     })
@@ -90,7 +91,7 @@ describe("Routes for Project", () => {
                 chai.request(app)
                     .get(`/project/pid/${projs[0]._id}`)
                     .then(res => {
-                        expect(res.body.name).to.contain(projs[0].name)
+                        expect(res.body.name).to.equal(projs[0].name)
                         done()
                     }).catch(err => console.log(err))
             })
@@ -107,10 +108,32 @@ describe("Routes for Project", () => {
                 .post(`/project/${testUID}`)
                 .send(newProject)
                 .then(res => {
+                    testPID = res.body._id
                     expect(res.body.name).to.equal(newProject.name)
                     expect(res.body.managers[0]).to.contain(testUID)
                     done()
                 }).catch(err => { throw err })
+        })
+
+        it("should remove user from a project", done => {
+            Project.findOne({ name: "test proj two"}).then(proj => {
+                expect(proj.developers.length).to.equal(1)
+                chai.request(app)
+                    .put(`/project/developer/${testUID}/${proj._id}`)
+                    .then(res => {
+                        expect(res.body.developers.length).to.equal(0)
+                        done()
+                    })
+            })
+        })
+
+        it("should delete a project", done => {
+            chai.request(app)
+                .delete(`/project/${testPID}`)
+                .then(res => {
+                    expect(res.body.length).to.equal(3)
+                    done()
+                })
         })
     })
 })

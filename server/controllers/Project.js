@@ -46,4 +46,32 @@ router.post("/:uid", (req, res) => {
     })
 })
 
+//@route        /project/developer/:uid/:pid
+//@desc         REMOVES user from project
+router.put("/developer/:uid/:pid", (req, res) => {
+    User.findById(req.params.uid).then(user => {
+        Project.findById(req.params.pid).then(proj => {
+            let uidx = user.projects_joined.indexOf(req.params.pid)
+            user.projects_joined.splice(uidx, 1)
+            user.save().then(() => {
+                let pidx = proj.developers.indexOf(req.params.uid)
+                proj.developers.splice(pidx, 1)
+                proj.save().then(() => {
+                    res.json(proj)
+                })
+            })
+        })
+    })
+})
+
+//@route        /project/:pid
+//@desc         DELETE specific route
+router.delete("/:pid", (req, res) => {
+    Project.findByIdAndDelete(req.params.pid).then(() => {
+        Project.find().then(projs => {
+            res.json(projs)
+        })
+    })
+})
+
 module.exports = router
