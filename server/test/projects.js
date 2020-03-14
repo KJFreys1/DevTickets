@@ -13,7 +13,7 @@ describe("Routes for Project", () => {
     let testPID
     let testDevID
 
-    before(function(done) {
+    before(function (done) {
         this.timeout(4000)
         User = require("../models/User")
         Project = require("../models/Project")
@@ -129,7 +129,7 @@ describe("Routes for Project", () => {
                 description: "PROJ TEST"
             }
 
-            Project.findOne({ name: "test proj one"}).then(proj => {
+            Project.findOne({ name: "test proj one" }).then(proj => {
                 expect(proj.managers.length).to.equal(1)
                 chai.request(app)
                     .put(`/project/${proj._id}`)
@@ -146,6 +146,7 @@ describe("Routes for Project", () => {
             User.findOne({ name: "put test for proj" }).then(user => {
                 Project.findOne({ name: "test proj two" }).then(proj => {
                     testDevID = user._id
+                    expect(proj.developers.length).to.equal(1)
                     chai.request(app)
                         .put(`/project/developer/${testDevID}/${proj._id}`)
                         .then(res => {
@@ -156,8 +157,20 @@ describe("Routes for Project", () => {
             })
         })
 
+        it("should add manager to a project", done => {
+            Project.findOne({ name: "test proj two" }).then(proj => {
+                expect(proj.managers.length).to.equal(0)
+                chai.request(app)
+                    .put(`/project/manager/${testDevID}/${proj._id}`)
+                    .then(res => {
+                        expect(res.body.managers.length).to.equal(1)
+                        done()
+                    })
+            })
+        })
+
         it("should remove user from a project", done => {
-            Project.findOne({ name: "test proj two"}).then(proj => {
+            Project.findOne({ name: "test proj two" }).then(proj => {
                 expect(proj.developers.length).to.equal(2)
                 chai.request(app)
                     .put(`/project/remove/${testUID}/${proj._id}`)

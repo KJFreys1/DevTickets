@@ -96,6 +96,22 @@ router.put("/developer/:uid/:pid", (req, res) => {
     })
 })
 
+//@route        /project/manager/:uid/:pid
+//@desc         PUT user into project manager array
+router.put("/manager/:uid/:pid", (req, res) => {
+    User.findById(req.params.uid).then(user => {
+        Project.findById(req.params.pid).then(proj => {
+            user.projects_managed.push(proj._id)
+            user.save().then(() => {
+                proj.managers.push(user._id)
+                proj.save().then(() => {
+                    res.json(proj)
+                })
+            })
+        })
+    })
+})
+
 
 //@route        /project/:pid
 //@desc         DELETE specific route
