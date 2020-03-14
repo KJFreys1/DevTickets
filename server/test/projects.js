@@ -9,6 +9,8 @@ describe("Routes for Project", () => {
     let Project
     let app
 
+    let testUID
+
     before(function(done) {
         this.timeout(4000)
         User = require("../models/User")
@@ -66,9 +68,10 @@ describe("Routes for Project", () => {
                 })
         })
 
-        it("should find project by user id", done => {
+        it("should get all projects connected to user", done => {
             User.findOne({ name: "TEST USER" }).then(user => {
-                let path = `/project/${user._id}`
+                testUID = user._id
+                let path = `/project/uid/${testUID}`
                 chai.request(app)
                     .get(path)
                     .then(res => {
@@ -80,6 +83,34 @@ describe("Routes for Project", () => {
                         done()
                     })
             })
+        })
+
+        it("should get specifc project", done => {
+            Project.find({}).then(projs => {
+                chai.request(app)
+                    .get(`/project/pid/${projs[0]._id}`)
+                    .then(res => {
+                        expect(res.body.name).to.contain(projs[0].name)
+                        done()
+                    }).catch(err => console.log(err))
+            })
+        })
+
+        it("should create a new project", done => {
+            let newProject = {
+                name: "post test",
+                description: "PROJ TEST",
+                managers: [testUID]
+            }
+
+            chai.request(app)
+                .post(`/project/${testUID}`)
+                .send(newProject)
+                .then(res => {
+                    expect(res.body.name).to.equal(newProject.name)
+                    expect(res.body.managers[0]).to.contain(testUID)
+                    done()
+                }).catch(err => { throw err })
         })
     })
 })
