@@ -115,6 +115,25 @@ describe("Routes for Project", () => {
                 }).catch(err => { throw err })
         })
 
+        it("should update project info", done => {
+            let updatedProject = {
+                name: "put test",
+                description: "PROJ TEST"
+            }
+
+            Project.findOne({ name: "test proj one"}).then(proj => {
+                expect(proj.managers.length).to.equal(1)
+                chai.request(app)
+                    .put(`/project/${proj._id}`)
+                    .send(updatedProject)
+                    .then(res => {
+                        expect(res.body.name).to.equal(updatedProject.name)
+                        expect(res.body.managers.length).to.equal(1)
+                        done()
+                    })
+            })
+        })
+
         it("should remove user from a project", done => {
             Project.findOne({ name: "test proj two"}).then(proj => {
                 expect(proj.developers.length).to.equal(1)

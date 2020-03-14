@@ -46,8 +46,20 @@ router.post("/:uid", (req, res) => {
     })
 })
 
+//@route        /project/:pid
+//@desc         UPDATE semantic information of project
+router.put("/:pid", (req, res) => {
+    Project.findById(req.params.pid).then(proj => {
+        proj.name = req.body.name
+        proj.description = req.body.description
+        proj.save().then(() => {
+            res.json(proj)
+        })
+    })
+})
+
 //@route        /project/developer/:uid/:pid
-//@desc         REMOVES user from project
+//@desc         REMOVE user from project
 router.put("/developer/:uid/:pid", (req, res) => {
     User.findById(req.params.uid).then(user => {
         Project.findById(req.params.pid).then(proj => {
