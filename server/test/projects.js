@@ -138,7 +138,7 @@ describe("Routes for Project", () => {
             Project.findOne({ name: "test proj two"}).then(proj => {
                 expect(proj.developers.length).to.equal(1)
                 chai.request(app)
-                    .put(`/project/developer/${testUID}/${proj._id}`)
+                    .put(`/project/remove/${testUID}/${proj._id}`)
                     .then(res => {
                         expect(res.body.developers.length).to.equal(0)
                         done()
