@@ -13,8 +13,8 @@ router.get("/", (req, res) => {
 router.get("/:uid", (req, res) => {
     Project.find({
         $or: [
-            { $in: { developers: req.params.uid } }, 
-            { $in: { managers: req.params.uid } } 
+            { developers: { $in: [req.params.uid] } },
+            { managers: { $in: [req.params.uid] } }
         ] 
     }).then(projs => {
         res.json(projs)

@@ -16,7 +16,9 @@ describe("Routes", () => {
     let Comment
     let app = require("../server")
 
-    before(done => {
+    before(function(done) {
+        this.timeout(4000)
+
         User = require("../models/User")
         Ticket = require("../models/Ticket")
         Project = require("../models/Project")

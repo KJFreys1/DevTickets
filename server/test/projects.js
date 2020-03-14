@@ -20,7 +20,6 @@ describe("Routes for Project", () => {
             email: "t@t",
             password: "123"
         }).then(user => {
-            console.log('here')
             Promise.all([
                 Project.create({
                     name: "test proj one",
@@ -28,6 +27,7 @@ describe("Routes for Project", () => {
                 }).then(proj => {
                     proj.managers.push(user._id)
                     user.projects_managed.push(proj._id)
+                    proj.save()
                 }),
                 Project.create({
                     name: "test proj two",
@@ -35,13 +35,14 @@ describe("Routes for Project", () => {
                 }).then(proj => {
                     proj.developers.push(user._id)
                     user.projects_joined.push(proj._id)
+                    proj.save()
                 }),
                 Project.create({
                     name: "test proj three",
                     description: "PROJ TEST"
                 })
             ]).then(() => {
-                console.log(user)
+                user.save()
                 done()
             })
         })
@@ -56,6 +57,15 @@ describe("Routes for Project", () => {
     })
 
     describe("GET project", () => {
+        it("should get all projects", done => {
+            chai.request(app)
+                .get("/project")
+                .then(res => {
+                    expect(res.body.length).to.equal(3)
+                    done()
+                })
+        })
+
         it("should find project by user id", done => {
             User.findOne({ name: "TEST USER" }).then(user => {
                 let path = `/project/${user._id}`
@@ -63,6 +73,10 @@ describe("Routes for Project", () => {
                     .get(path)
                     .then(res => {
                         expect(res.body.length).to.equal(2)
+                        expect(res.body[0].name).to.contain("test proj one")
+                        expect(res.body[0].managers[0]).to.contain(user._id)
+                        expect(res.body[1].name).to.contain("test proj two")
+                        expect(res.body[1].developers[0]).to.contain(user._id)
                         done()
                     })
             })
