@@ -10,10 +10,12 @@ app.use(parser.json())
 const userController = require("./controllers/User")
 const commentController = require("./controllers/Comment")
 const projectController = require("./controllers/Project")
+const ticketController = require("./controllers/Ticket")
 
 app.use("/user", userController)
 app.use("/comment", commentController)
 app.use("/project", projectController)
+app.use("/ticket", ticketController)
 
 const PORT = process.env.PORT || 4000
 

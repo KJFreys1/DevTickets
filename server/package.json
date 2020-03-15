@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "test": "./node_modules/mocha/bin/mocha --exit test/index.js",
-    "testproj": "./node_modules/mocha/bin/mocha --exit test/projects.js"
+    "testproj": "./node_modules/mocha/bin/mocha --exit test/projects.js",
+    "testticket": "./node_modules/mocha/bin/mocha --exit test/tickets.js"
   },
   "author": "Kyle Freyermuth",
   "license": "ISC",
