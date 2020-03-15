@@ -53,4 +53,38 @@ router.post("/", (req, res) => {
     })
 })
 
+router.put("/assign/:uid/:tid", (req, res) => {
+    Ticket.findById(req.params.tid).then(ticket => {
+        User.findById(req.params.uid).then(user => {
+            ticket.developers.push(user._id)
+            ticket.save().then(() => {
+                user.tickets_assigned.push(ticket._id)
+                user.save().then(() => {
+                    res.json(ticket)
+                })
+            })
+        })
+    })
+})
+
+router.put("/remove/:uid/:tid", (req, res) => {
+    Ticket.findById(req.params.tid).then(ticket => {
+        User.findById(req.params.uid).then(user => {
+            let tidx = ticket.developers.indexOf(user._id)
+            let uidx = user.tickets_assigned.indexOf(ticket._id)
+            if(tidx != -1 && uidx != -1) {
+                ticket.developers.splice(tidx, 1)
+                ticket.save().then(() => {
+                    user.tickets_assigned.splice(uidx, 1)
+                    user.save().then(() => {
+                        res.json(ticket)
+                    })
+                })
+            } else {
+                res.json({ msg: "User not found"})
+            }
+        })
+    })
+})
+
 module.exports = router

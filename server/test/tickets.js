@@ -142,4 +142,33 @@ describe("Routes for Ticket", () => {
             })
         })
     })
+
+    it("should assign user to ticket", done => {
+        User.findOne({ name: "user one" }).then(user => {
+            Ticket.findOne({ issue: "ticket post test"} ).then(ticket => {
+                expect(ticket.developers.length).to.equal(0)
+                chai.request(app)
+                    .put(`/ticket/assign/${user._id}/${ticket._id}`)
+                    .then(res => {
+                        expect(res.body.developers.length).to.equal(1)
+                        expect(res.body.developers[0]).to.contain(user._id)
+                        done()
+                    })
+            })
+        })
+    })
+
+    it("should remove user from ticket", done => {
+        User.findOne({ name: "user one" }).then(user => {
+            Ticket.findOne({ issue: "ticket post test"} ).then(ticket => {
+                expect(ticket.developers.length).to.equal(1)
+                chai.request(app)
+                    .put(`/ticket/remove/${user._id}/${ticket._id}`)
+                    .then(res => {
+                        expect(res.body.developers.length).to.equal(0)
+                        done()
+                    })
+            })
+        })
+    })
 })
