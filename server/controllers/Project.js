@@ -32,6 +32,15 @@ router.get("/uid/:uid", (req, res) => {
 router.get("/pid/:pid", (req, res) => {
     Project.findById(req.params.pid)
         .populate("feed")
+        .populate("tickets")
+        .populate({
+            path: "developers",
+            select: "name, _id"
+        })
+        .populate({
+            path: "managers",
+            select: "name, _id"
+        })
         .then(proj => {
             res.json(proj)
     }).catch(err => console.log(err))
@@ -201,11 +210,11 @@ router.get("/comment/test/all", (req, res) => {
 router.delete("/:pid", (req, res) => {
     Project.findById(req.params.pid).then(proj => {
         proj.feed.forEach(id => {
-            Comment.findByIdAndDelete(id)
-            Event.findByIdAndDelete(id)
+            Comment.findByIdAndDelete(id).catch(err => { throw err })
+            Event.findByIdAndDelete(id).catch(err => { throw err })
         })
         proj.tickets.forEach(id => {
-            Ticket.findByIdAndDelete(id)
+            Ticket.findByIdAndDelete(id).catch(err => { throw err })
         })
     }).then(() => {
         Project.findByIdAndDelete(req.params.pid).then(() => {

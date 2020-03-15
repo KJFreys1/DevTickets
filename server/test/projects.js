@@ -13,6 +13,7 @@ describe("Routes for Project", () => {
 
     let testUID
     let testPID
+    let testCID
     let testDevID
 
     before(function (done) {
@@ -223,32 +224,59 @@ describe("Routes for Project", () => {
 
         it("should add comment to project", done => {
             let newComment
-            Project.findOne({ name: "post test" }).then(proj => {
-                User.findOne({ name: "TEST USER" }).then(user => {
-                    newComment = {
-                        message: "Comment one",
-                        user: user._id
-                    }
-                }).then(() => {
-                    expect(proj.feed.length).to.equal(0)
-                    chai.request(app)
-                        .post(`/project/comment/add/${testPID}`)
-                        .send(newComment)
-                        .then(res => {
-                            expect(res.body.feed.length).to.equal(1)
-                            done()
-                        })
-                })
+            User.findOne({ name: "TEST USER" }).then(user => {
+                newComment = {
+                    message: "Comment one",
+                    user: user._id
+                }
+            }).then(() => {
+                chai.request(app)
+                    .post(`/project/comment/add/${testPID}`)
+                    .send(newComment)
+                    .then(res => {
+                        testCID = res.body.feed[0]
+                        expect(res.body.feed.length).to.equal(1)
+                        done()
+                    })
             })
         })
 
-        it("should have comment with correct information", done => {
-            Project.findOne({ name: "post test" }).then(proj => {
+        it("should add second comment to project", done => {
+            let newComment
+            User.findOne({ name: "TEST USER" }).then(user => {
+                newComment = {
+                    message: "Comment two",
+                    user: user._id
+                }
+            }).then(() => {
                 chai.request(app)
-                    .get(`/project/pid/${testPID}`)
+                    .post(`/project/comment/add/${testPID}`)
+                    .send(newComment)
+                    .then(res => {
+                        expect(res.body.feed.length).to.equal(2)
+                        done()
+                    })
+            })
+        })
+
+        it("should have comments with correct information", done => {
+            chai.request(app)
+                .get(`/project/pid/${testPID}`)
+                .then(res => {
+                    expect(res.body.feed.length).to.equal(2)
+                    expect(res.body.feed[0].message).to.equal("Comment one")
+                    expect(res.body.feed[1].message).to.equal("Comment two")
+                    done()
+                })
+        })
+
+        it("should remove comment from project", done => {
+            User.findOne({ name: "TEST USER" }).then(user => {
+                chai.request(app)
+                    .put(`/project/comment/remove/${testPID}/${testCID}`)
                     .then(res => {
                         expect(res.body.feed.length).to.equal(1)
-                        expect(res.body.feed[0].message).to.equal("Comment one")
+                        expect(res.body.msg).to.be.undefined
                         done()
                     })
             })
