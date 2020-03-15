@@ -15,8 +15,26 @@ router.get("/", (req, res) => {
 
 router.get("/pid/:pid", (req, res) => {
     Project.findById(req.params.pid).then(proj => {
-        res.json(proj.tickets)
+        Ticket.find({ _id: { $in: [proj.tickets] } }).then(tickets => {
+            res.json(tickets)
+        })
     })
+})
+
+router.get("/issued/:uid", (req, res) => {
+    User.findById(req.params.uid).then(user => {
+        Ticket.find({ _id: { $in: [user.tickets_issued] } }).then(tickets => {
+            res.json(tickets)
+        }).catch(err => { throw err })
+    }).catch(err => { throw err })
+})
+
+router.get("/assigned/:uid", (req, res) => {
+    User.findById(req.params.uid).then(user => {
+        Ticket.find({ _id: { $in: [user.tickets_assigned] } }).then(tickets => {
+            res.json(tickets)
+        }).catch(err => { throw err })
+    }).catch(err => { throw err })
 })
 
 module.exports = router

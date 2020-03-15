@@ -85,9 +85,37 @@ describe("Routes for Ticket", () => {
                 .get(`/ticket/pid/${proj._id}`)
                 .then(res => {
                     expect(res.body.length).to.equal(1)
-                    expect(res.body[0]).to.contain(proj.tickets[0])
+                    expect(res.body[0]._id).to.contain(proj.tickets[0])
                     done()
                 })
+        })
+    })
+
+    it("should get all tickets issued by user", done => {
+        User.findOne({ name: "user one" }).then(user => {
+            expect(user.tickets_issued.length).to.equal(1)
+            expect(user.tickets_assigned.length).to.equal(0)
+            chai.request(app)
+                .get(`/ticket/issued/${user._id}`)
+                .then(res => {
+                    expect(res.body.length).to.equal(1)
+                    expect(res.body[0]._id).to.contain(user.tickets_issued[0])
+                    done()
+                }).catch(err => { throw err })
+        })
+    })
+
+    it("should get all tickets assigned to user", done => {
+        User.findOne({ name: "user two" }).then(user => {
+            expect(user.tickets_issued.length).to.equal(0)
+            expect(user.tickets_assigned.length).to.equal(1)
+            chai.request(app)
+                .get(`/ticket/assigned/${user._id}`)
+                .then(res => {
+                    expect(res.body.length).to.equal(1)
+                    expect(res.body[0]._id).to.contain(user.tickets_assigned[0])
+                    done()
+                }).catch(err => { throw err })
         })
     })
 })
