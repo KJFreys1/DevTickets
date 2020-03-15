@@ -37,4 +37,20 @@ router.get("/assigned/:uid", (req, res) => {
     }).catch(err => { throw err })
 })
 
+router.post("/", (req, res) => {
+    Ticket.create(req.body).then(ticket => {
+        User.findById(ticket.submitter).then(user => {
+            user.tickets_issued.push(ticket._id)
+            user.save().then(() => {
+                Project.findById(ticket.project).then(proj => {
+                    proj.tickets.push(ticket._id)
+                    proj.save().then(() => {
+                        res.json(ticket)
+                    })
+                })
+            })
+        })
+    })
+})
+
 module.exports = router

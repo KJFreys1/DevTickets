@@ -118,4 +118,28 @@ describe("Routes for Ticket", () => {
                 }).catch(err => { throw err })
         })
     })
+
+    it("should post a ticket to a project", done => {
+        let newTicket
+
+        User.findOne({ name: "user two" }).then(user => {
+            Project.findOne({ name: "proj one" }).then(proj => {
+                newTicket = {
+                    issue: "ticket post test",
+                    submitter: user._id,
+                    project: proj._id
+                }
+            }).then(() => {
+                chai.request(app)
+                    .post("/ticket")
+                    .send(newTicket)
+                    .then(res => {
+                        expect(res.body.issue).to.equal(newTicket.issue)
+                        expect(res.body.submitter).to.contain(newTicket.submitter)
+                        expect(res.body.project).to.contain(newTicket.project)
+                        done()
+                    })
+            })
+        })
+    })
 })
