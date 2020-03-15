@@ -60,7 +60,7 @@ describe("Routes for Project", () => {
     })
 
     after(done => {
-        User.findOneAndDelete({ name: "TEST USER" }).then(() => {
+        User.deleteMany({ email: "t@t" }).then(() => {
             Project.deleteMany({ description: "PROJ TEST" }).then(() => {
                 done()
             })
@@ -158,12 +158,44 @@ describe("Routes for Project", () => {
         })
 
         it("should add manager to a project", done => {
-            Project.findOne({ name: "test proj two" }).then(proj => {
-                expect(proj.managers.length).to.equal(0)
+            Project.findOne({ name: "put test" }).then(proj => {
+                expect(proj.managers.length).to.equal(1)
                 chai.request(app)
                     .put(`/project/manager/${testDevID}/${proj._id}`)
                     .then(res => {
+                        expect(res.body.managers.length).to.equal(2)
+                        done()
+                    })
+            })
+        })
+
+        it("should demote manager to developer in a project", done => {
+            Project.findOne({ name: "put test" }).then(proj => {
+                expect(proj.managers.length).to.equal(2)
+                expect(proj.developers.length).to.equal(0)
+                chai.request(app)
+                    .put(`/project/demote/${testDevID}/${proj._id}`)
+                    .then(res => {
                         expect(res.body.managers.length).to.equal(1)
+                        expect(res.body.developers.length).to.equal(1)
+                        expect(res.body.developers[0]).to.contain(testDevID)
+                        expect(res.body.msg).to.be.undefined
+                        done()
+                    })
+            })
+        })
+
+        it("should promote developer to manager in a project", done => {
+            Project.findOne({ name: "put test" }).then(proj => {
+                expect(proj.managers.length).to.equal(1)
+                expect(proj.developers.length).to.equal(1)
+                chai.request(app)
+                    .put(`/project/promote/${testDevID}/${proj._id}`)
+                    .then(res => {
+                        expect(res.body.managers.length).to.equal(2)
+                        expect(res.body.managers[1]).to.contain(testDevID)
+                        expect(res.body.developers.length).to.equal(0)
+                        expect(res.body.msg).to.be.undefined
                         done()
                     })
             })

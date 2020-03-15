@@ -112,6 +112,50 @@ router.put("/manager/:uid/:pid", (req, res) => {
     })
 })
 
+//@route        /project/demote/:uid/:pid
+//@desc         DEMOTE user from manager array to develoepr array
+router.put("/demote/:uid/:pid", (req, res) => {
+    User.findById(req.params.uid).then(user => {
+        Project.findById(req.params.pid).then(proj => {
+            let uidx = user.projects_managed.indexOf(proj._id)
+            let pidx = proj.managers.indexOf(user._id)
+            if(uidx != -1 && pidx != -1) {
+                user.projects_joined.push(user.projects_managed.splice(uidx, 1))
+                user.save().then(() => {
+                    proj.developers.push(proj.managers.splice(pidx, 1))
+                    proj.save().then(() => {
+                        res.json(proj)
+                    })
+                })
+            } else {
+                res.json({ msg: "User not found" })
+            }
+        })
+    })
+})
+
+//@route        /project/promote/:uid/:pid
+//@desc         PROMOTE user from manager array to develoepr array
+router.put("/promote/:uid/:pid", (req, res) => {
+    User.findById(req.params.uid).then(user => {
+        Project.findById(req.params.pid).then(proj => {
+            let uidx = user.projects_joined.indexOf(proj._id)
+            let pidx = proj.developers.indexOf(user._id)
+            if(uidx != -1 && pidx != -1) {
+                user.projects_managed.push(user.projects_joined.splice(uidx, 1))
+                user.save().then(() => {
+                    proj.managers.push(proj.developers.splice(pidx, 1))
+                    proj.save().then(() => {
+                        res.json(proj)
+                    })
+                })
+            } else {
+                res.json({ msg: "User not found" })
+            }
+        })
+    })
+})
+
 
 //@route        /project/:pid
 //@desc         DELETE specific route
