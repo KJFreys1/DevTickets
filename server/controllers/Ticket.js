@@ -87,4 +87,39 @@ router.put("/remove/:uid/:tid", (req, res) => {
     })
 })
 
+router.put("/info/:tid", (req, res) => {
+    Ticket.findById(req.params.tid).then(ticket => {
+        if (req.body.issue) {
+            ticket.issue = req.body.issue
+        }
+        if (req.body.status) {
+            ticket.status = req.body.status
+        }
+        if (req.body.due_date) {
+            ticket.due_date = req.body.due_date
+            ticket.enable_due_date = true
+        }
+        ticket.save().then(newTicket => {
+            res.json(newTicket)
+        })
+    })
+})
+
+router.put("/toggledue/:tid", (req, res) => {
+    Ticket.findById(req.params.tid).then(ticket => {
+        ticket.enable_due_date = !ticket.enable_due_date
+        ticket.save().then(() => {
+            res.json(ticket)
+        })
+    })
+})
+
+router.delete("/:tid", (req, res) => {
+    Ticket.findByIdAndDelete(req.params.tid).then(() => {
+        Ticket.find().then(tickets => {
+            res.json(tickets)
+        })
+    })
+})
+
 module.exports = router

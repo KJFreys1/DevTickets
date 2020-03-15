@@ -166,9 +166,79 @@ describe("Routes for Ticket", () => {
                     .put(`/ticket/remove/${user._id}/${ticket._id}`)
                     .then(res => {
                         expect(res.body.developers.length).to.equal(0)
+                        expect(res.body.msg).to.be.undefined
                         done()
                     })
             })
+        })
+    })
+
+    it("should update issue name", done => {
+        Ticket.findOne({ issue: "ticket post test"} ).then(ticket => {
+            chai.request(app)
+                .put(`/ticket/info/${ticket._id}`)
+                .send({ issue: "put test" })
+                .then(res => {
+                    expect(res.body.issue).to.equal("put test")
+                    expect(res.body.status).to.equal(ticket.status)
+                    expect(res.body.due_date).to.equal(ticket.due_date)
+                    done()
+                })
+        })
+    })
+
+    it("should update status", done => {
+        Ticket.findOne({ issue: "put test"} ).then(ticket => {
+            chai.request(app)
+                .put(`/ticket/info/${ticket._id}`)
+                .send({ status: "In Progress" })
+                .then(res => {
+                    expect(res.body.issue).to.equal(ticket.issue)
+                    expect(res.body.status).to.equal("In Progress")
+                    expect(res.body.due_date).to.equal(ticket.due_date)
+                    done()
+                })
+        })
+    })
+
+    it("should update due date", done => {
+        Ticket.findOne({ issue: "put test"} ).then(ticket => {
+            let dueDate = new Date()
+            dueDate.setDate(dueDate.getDate() + 7)
+            chai.request(app)
+                .put(`/ticket/info/${ticket._id}`)
+                .send({ due_date: dueDate})
+                .then(res => {
+                    expect(res.body.issue).to.equal(ticket.issue)
+                    expect(res.body.status).to.equal(ticket.status)
+                    expect(res.body.due_date).to.equal(dueDate.toISOString())
+                    done()
+                })
+        })
+    })
+
+    it("should toggle enable due date", done => {
+        Ticket.findOne({ issue: "put test"} ).then(ticket => {
+            expect(ticket.enable_due_date).to.equal(true)
+            chai.request(app)
+                .put(`/ticket/toggledue/${ticket._id}`)
+                .then(res => {
+                    expect(res.body.enable_due_date).to.not.equal(ticket.enable_due_date)
+                    expect(res.body.enable_due_date).to.equal(false)
+                    done()
+                })
+        })
+    })
+
+    it("should delete a ticket", done => {
+        Ticket.findOne({ issue: "put test" }).then(ticket => {
+            chai.request(app)
+                .delete(`/ticket/${ticket._id}`)
+                .then(res => {
+                    expect(res.body.length).to.equal(1)
+                    expect(res.body.filter(arr => arr.issue === "put test").length).to.equal(0)
+                    done()
+                })
         })
     })
 })

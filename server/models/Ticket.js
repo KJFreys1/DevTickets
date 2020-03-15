@@ -7,13 +7,17 @@ const ticketSchema = new Schema({
         default: Date.now()
     },
     due_date: Date,
+    enable_due_date: {
+        type: Boolean,
+        default: false
+    },
     issue: {
         type: String,
         required: true
     },
     status: {
         type: String,
-        default: "open"
+        default: "Open"
     },
     project: {
         ref: "Project",
