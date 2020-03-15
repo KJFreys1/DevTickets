@@ -77,4 +77,17 @@ describe("Routes for Ticket", () => {
                 done()
             })
     })
+
+    it("should get all tickets within project", done => {
+        Project.findOne({ name: "proj one" }).then(proj => {
+            expect(proj.tickets.length).to.equal(1)
+            chai.request(app)
+                .get(`/ticket/pid/${proj._id}`)
+                .then(res => {
+                    expect(res.body.length).to.equal(1)
+                    expect(res.body[0]).to.contain(proj.tickets[0])
+                    done()
+                })
+        })
+    })
 })

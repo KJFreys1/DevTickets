@@ -13,4 +13,10 @@ router.get("/", (req, res) => {
     })
 })
 
+router.get("/pid/:pid", (req, res) => {
+    Project.findById(req.params.pid).then(proj => {
+        res.json(proj.tickets)
+    })
+})
+
 module.exports = router
