@@ -1,8 +1,10 @@
 const express = require("express")
 const router = express.Router()
 
-const Project = require("../models/Project")
 const User = require("../models/User")
+const Project = require("../models/Project")
+const Comment = require("../models/Comment")
+const Event = require("../models/Event")
 
 //@route        /project
 //@desc         GET all projects
@@ -28,8 +30,10 @@ router.get("/uid/:uid", (req, res) => {
 //@route        /project/pid/:pid
 //@desc         GET specific project by project id
 router.get("/pid/:pid", (req, res) => {
-    Project.findById(req.params.pid).then(proj => {
-        res.json(proj)
+    Project.findById(req.params.pid)
+        .populate("feed")
+        .then(proj => {
+            res.json(proj)
     }).catch(err => console.log(err))
 })
 
@@ -156,13 +160,58 @@ router.put("/promote/:uid/:pid", (req, res) => {
     })
 })
 
+router.post("/comment/add/:pid", (req, res) => {
+    Comment.create(req.body).then(com => {
+        Project.findById(req.params.pid).then(proj => {
+            proj.feed.push(com._id)
+            proj.save().then(() => {
+                res.json(proj)
+            })
+        })
+    })
+})
+
+router.put("/comment/remove/:pid/:cid", (req, res) => {
+    Project.findById(req.params.pid).then(proj => {
+        Comment.findById(req.params.cid).then(com => {
+            let idx = proj.feed.indexOf(com._id)
+            if (idx != -1) {
+                proj.feed.splice(idx, 1)
+                proj.save().then(() => {
+                    Comment.findByIdAndDelete(req.params.cid).then(() => {
+                        res.json(proj)
+                    })
+                })
+            } else {
+                res.json({ msg: "Comment not found" })
+            }
+        })
+    })
+})
+
+router.get("/comment/test/all", (req, res) => {
+    Comment.find().then(coms => {
+        res.json(coms)
+    })
+})
 
 //@route        /project/:pid
 //@desc         DELETE specific route
+//@cascades     Comments, Events, Tickets
 router.delete("/:pid", (req, res) => {
-    Project.findByIdAndDelete(req.params.pid).then(() => {
-        Project.find().then(projs => {
-            res.json(projs)
+    Project.findById(req.params.pid).then(proj => {
+        proj.feed.forEach(id => {
+            Comment.findByIdAndDelete(id)
+            Event.findByIdAndDelete(id)
+        })
+        proj.tickets.forEach(id => {
+            Ticket.findByIdAndDelete(id)
+        })
+    }).then(() => {
+        Project.findByIdAndDelete(req.params.pid).then(() => {
+            Project.find().then(projs => {
+                res.json(projs)
+            })
         })
     })
 })

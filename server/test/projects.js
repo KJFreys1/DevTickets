@@ -7,6 +7,8 @@ chai.use(http)
 describe("Routes for Project", () => {
     let User
     let Project
+    let Comment
+    let Event
     let app
 
     let testUID
@@ -17,6 +19,8 @@ describe("Routes for Project", () => {
         this.timeout(4000)
         User = require("../models/User")
         Project = require("../models/Project")
+        Comment = require("../models/Comment")
+        Event = require("../models/Event")
         app = require("../server")
 
         User.create({
@@ -62,7 +66,11 @@ describe("Routes for Project", () => {
     after(done => {
         User.deleteMany({ email: "t@t" }).then(() => {
             Project.deleteMany({ description: "PROJ TEST" }).then(() => {
-                done()
+                Comment.deleteMany().then(() => {
+                    Event.deleteMany().then(() => {
+                        done()
+                    })
+                })
             })
         })
     })
@@ -213,11 +221,53 @@ describe("Routes for Project", () => {
             })
         })
 
+        it("should add comment to project", done => {
+            let newComment
+            Project.findOne({ name: "post test" }).then(proj => {
+                User.findOne({ name: "TEST USER" }).then(user => {
+                    newComment = {
+                        message: "Comment one",
+                        user: user._id
+                    }
+                }).then(() => {
+                    expect(proj.feed.length).to.equal(0)
+                    chai.request(app)
+                        .post(`/project/comment/add/${testPID}`)
+                        .send(newComment)
+                        .then(res => {
+                            expect(res.body.feed.length).to.equal(1)
+                            done()
+                        })
+                })
+            })
+        })
+
+        it("should have comment with correct information", done => {
+            Project.findOne({ name: "post test" }).then(proj => {
+                chai.request(app)
+                    .get(`/project/pid/${testPID}`)
+                    .then(res => {
+                        expect(res.body.feed.length).to.equal(1)
+                        expect(res.body.feed[0].message).to.equal("Comment one")
+                        done()
+                    })
+            })
+        })
+
         it("should delete a project", done => {
             chai.request(app)
                 .delete(`/project/${testPID}`)
                 .then(res => {
                     expect(res.body.length).to.equal(3)
+                    done()
+                })
+        })
+
+        it("should not have existing comments", done => {
+            chai.request(app)
+                .get("/project/comment/test/all")
+                .then(res => {
+                    expect(res.body.length).to.equal(0)
                     done()
                 })
         })
