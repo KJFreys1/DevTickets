@@ -1,0 +1,65 @@
+#profile {
+    display: flex;
+}
+
+.profile-left-side {
+    width: 65vw;
+    height: 100vh;
+    background-color: gray;
+}
+
+.profile-right-side {
+    width: 35vw;
+    height: 100vh;
+    background-color: lightgray;
+}
+
+.profile-greeting {
+    font-size: 50px;
+    text-align: center;
+    margin: 50px;
+}
+
+.profile-container {
+    background-color: white;
+    width: 50vw;
+    height: 60vh;
+    margin: auto;
+    padding: 20px;
+}
+
+.profile-item-container {
+    background-color: black;
+    color: white;
+}
+
+.profile-item {
+    text-align: center;
+    padding: 20px 0;
+}
+
+.profile-pic-placeholder {
+    background-color: white;
+    height: 200px;
+    width: 200px;
+    margin: 50px auto;
+    border-radius: 100px;
+}
+
+.profile-info-container {
+    background-color: white;
+    height: 40vh;
+    width: 25vw;
+    margin: auto;
+    padding: 20px;
+}
+
+.profile-info-item-container {
+    background-color: black;
+    color: white;
+}
+
+.profile-info-item {
+    text-align: center;
+    padding: 10px 0;
+}
