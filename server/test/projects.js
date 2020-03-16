@@ -8,7 +8,6 @@ describe("Routes for Project", () => {
     let User
     let Project
     let Comment
-    let Event
     let app
 
     let testUID
@@ -21,7 +20,6 @@ describe("Routes for Project", () => {
         User = require("../models/User")
         Project = require("../models/Project")
         Comment = require("../models/Comment")
-        Event = require("../models/Event")
         app = require("../server")
 
         User.create({
@@ -68,9 +66,7 @@ describe("Routes for Project", () => {
         User.deleteMany({ email: "t@t" }).then(() => {
             Project.deleteMany({ description: "PROJ TEST" }).then(() => {
                 Comment.deleteMany().then(() => {
-                    Event.deleteMany().then(() => {
-                        done()
-                    })
+                    done()
                 })
             })
         })
@@ -271,15 +267,13 @@ describe("Routes for Project", () => {
         })
 
         it("should remove comment from project", done => {
-            User.findOne({ name: "TEST USER" }).then(user => {
-                chai.request(app)
-                    .put(`/project/comment/remove/${testPID}/${testCID}`)
-                    .then(res => {
-                        expect(res.body.feed.length).to.equal(1)
-                        expect(res.body.msg).to.be.undefined
-                        done()
-                    })
-            })
+            chai.request(app)
+                .put(`/project/comment/remove/${testPID}/${testCID}`)
+                .then(res => {
+                    expect(res.body.feed.length).to.equal(1)
+                    expect(res.body.msg).to.be.undefined
+                    done()
+                })
         })
 
         it("should delete a project", done => {

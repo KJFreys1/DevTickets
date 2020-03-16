@@ -4,7 +4,6 @@ const router = express.Router()
 const User = require("../models/User")
 const Project = require("../models/Project")
 const Comment = require("../models/Comment")
-const Event = require("../models/Event")
 
 //@route        /project
 //@desc         GET all projects
@@ -211,7 +210,6 @@ router.delete("/:pid", (req, res) => {
     Project.findById(req.params.pid).then(proj => {
         proj.feed.forEach(id => {
             Comment.findByIdAndDelete(id).catch(err => { throw err })
-            Event.findByIdAndDelete(id).catch(err => { throw err })
         })
         proj.tickets.forEach(id => {
             Ticket.findByIdAndDelete(id).catch(err => { throw err })

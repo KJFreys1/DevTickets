@@ -5,7 +5,6 @@ const User = require("../models/User")
 const Project = require("../models/Project")
 const Ticket = require("../models/Ticket")
 const Comment = require("../models/Comment")
-const Event = require("../models/Event")
 
 router.get("/", (req, res) => {
     Ticket.find().then(tickets => {

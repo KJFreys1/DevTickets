@@ -32,10 +32,6 @@ const projectSchema = new Schema({
         {
             ref: "Comment",
             type: mongoose.Schema.Types.ObjectId
-        },
-        {
-            ref: "Event",
-            type: mongoose.Schema.Types.ObjectId
         }
     ],
     date: {
