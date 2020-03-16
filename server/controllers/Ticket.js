@@ -113,6 +113,41 @@ router.put("/toggledue/:tid", (req, res) => {
     })
 })
 
+router.post("/comment/add/:tid", (req, res) => {
+    Comment.create(req.body).then(com => {
+        Ticket.findById(req.params.tid).then(ticket => {
+            ticket.comments.push(com._id)
+            ticket.save().then(() => {
+                res.json(ticket)
+            })
+        })
+    })
+})
+
+router.put("/comment/remove/:tid/:cid", (req, res) => {
+    Ticket.findById(req.params.tid).then(ticket => {
+        Comment.findById(req.params.cid).then(com => {
+            let idx = ticket.comments.indexOf(com._id)
+            if (idx != -1) {
+                ticket.comments.splice(idx, 1)
+                ticket.save().then(() => {
+                    Comment.findByIdAndDelete(req.params.cid).then(() => {
+                        res.json(ticket)
+                    })
+                })
+            } else {
+                res.json({ msg: "Comment not found" })
+            }
+        })
+    })
+})
+
+router.get("/comment/test/all", (req, res) => {
+    Comment.find().then(coms => {
+        res.json(coms)
+    })
+})
+
 router.delete("/:tid", (req, res) => {
     Ticket.findByIdAndDelete(req.params.tid).then(() => {
         Ticket.find().then(tickets => {

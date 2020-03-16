@@ -8,6 +8,7 @@ describe("Routes for Ticket", () => {
     let User
     let Project
     let Ticket
+    let Comment
     let app
 
     before(function (done) {
@@ -16,6 +17,7 @@ describe("Routes for Ticket", () => {
         User = require("../models/User")
         Project = require("../models/Project")
         Ticket = require("../models/Ticket")
+        Comment = require("../models/Comment")
         app = require("../server")
 
         Promise.all([
@@ -62,7 +64,9 @@ describe("Routes for Ticket", () => {
         User.deleteMany({ email: "t@t" }).then(() => {
             Project.deleteMany({ description: "TEST PROJ" }).then(() => {
                 Ticket.deleteMany().then(() => {
-                    done()
+                    Comment.deleteMany().then(() => {
+                        done()
+                    })
                 })
             })
         })
@@ -227,6 +231,56 @@ describe("Routes for Ticket", () => {
                     expect(res.body.enable_due_date).to.equal(false)
                     done()
                 })
+        })
+    })
+
+    it("should post new comment to ticket", done => {
+        let newComment
+        Ticket.findOne({ issue: "put test" }).then(ticket => {
+            expect(ticket.comments.length).to.equal(0)
+            User.findOne({ name: "user one" }).then(user => {
+                newComment = {
+                    message: "comment one",
+                    user: user._id
+                }
+                chai.request(app)
+                    .post(`/ticket/comment/add/${ticket._id}`)
+                    .send(newComment)
+                    .then(res => {
+                        expect(res.body.comments.length).to.equal(1)
+                        done()
+                    })
+            })
+        })
+    })
+
+    it("should have correct info on comment", done => {
+        Ticket.findOne({ issue: "put test" }).then(ticket => {
+            expect(ticket.comments.length).to.equal(1)
+            User.findOne({ name: "user one" }).then(user => {
+                chai.request(app)
+                    .get("/ticket/comment/test/all")
+                    .then(res => {
+                        expect(res.body.length).to.equal(1)
+                        expect(res.body[0].message).to.equal("comment one")
+                        expect(res.body[0].user).to.contain(user._id)
+                        done()
+                    })
+            })
+        })
+    })
+
+    it("should remove a comment", done => {
+        Ticket.findOne({ issue: "put test" }).then(ticket => {
+            expect(ticket.comments.length).to.equal(1)
+            Comment.findOne({ message: "comment one" }).then(com => {
+                chai.request(app)
+                    .put(`/ticket/comment/remove/${ticket._id}/${com._id}`)
+                    .then(res => {
+                        expect(res.body.comments.length).to.equal(0)
+                        done()
+                    })
+            })
         })
     })
 
