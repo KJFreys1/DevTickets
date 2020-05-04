@@ -1,23 +1,23 @@
 import React, { useState } from "react"
 
 export default function SignUp(props) {
-    let [name, updateName] = useState()
-    let [email, updateEmail] = useState()
-    let [password, updatePassword] = useState()
+    let [name, setName] = useState()
+    let [email, setEmail] = useState()
+    let [password, setPassword] = useState()
 
     const handleNameChange = e => {
         e.preventDefault()
-        updateName(e.target.value)
+        setName(e.target.value)
     }
 
     const handleEmailChange = e => {
         e.preventDefault()
-        updateEmail(e.target.value)
+        setEmail(e.target.value)
     }
 
     const handlePasswordChange = e => {
         e.preventDefault()
-        updatePassword(e.target.value)
+        setPassword(e.target.value)
     }
 
     const handleSubmit = e => {

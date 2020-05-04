@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { Route, Redirect } from "react-router-dom"
+import axios from "axios";
+
 import LandingPage from "./components/LandingPage"
 import Login from "./components/Register/Login"
 import SignUp from "./components/Register/SignUp"
 import Profile from "./components/Main/Profile/Profile"
 
 import "./App.css";
-import axios from "axios";
 
 function App() {
   let [user, setUser] = useState()
-  let [visted, setVisited] = useState(false)
 
   const BASEURL = "http://dev-tickets.herokuapp.com"
 
@@ -28,8 +28,8 @@ function App() {
 
   const register = user => {
     axios.post(BASEURL+"/register", user).then(res => {
-      console.log(res.data)
       localStorage.token = res.data.token
+      setUser(res.data.user)
     }).catch(err => {
       console.log(err)
     })
@@ -37,8 +37,8 @@ function App() {
 
   const login = user => {
     axios.post(BASEURL+"/login", user).then(res => {
-      console.log(res.data)
       localStorage.token = res.data.token
+      setUser(res.data.user)
     }).catch(err => {
       console.log(err)
     })
@@ -46,6 +46,7 @@ function App() {
 
   const logout = () => {
     localStorage.clear()
+    setUser()
   }
 
   const redirectPath = user ? <Redirect to="/profile" /> : null

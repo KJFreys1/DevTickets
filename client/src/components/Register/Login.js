@@ -1,21 +1,22 @@
 import React, { useState } from "react"
 
 export default function Login(props) {
-    let [email, updateEmail] = useState()
-    let [password, updatePassword] = useState()
+    let [email, setEmail] = useState()
+    let [password, setPassword] = useState()
 
     const handleEmailChange = e => {
         e.preventDefault()
-        updateEmail(e.target.value)
+        setEmail(e.target.value)
     }
 
     const handlePasswordChange = e => {
         e.preventDefault()
-        updatePassword(e.target.value)
+        setPassword(e.target.value)
     }
 
     const handleSubmit = e => {
         e.preventDefault()
+        console.log('at submit')
         const user = { email, password }
         props.login(user)
     }
