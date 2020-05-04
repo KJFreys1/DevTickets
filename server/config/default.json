@@ -1,3 +1,7 @@
 {
-    "mongoURI": "mongodb+srv://kjfreys:Sandrock@cluster0-9gknl.mongodb.net/test?retryWrites=true&w=majority"
+    "mongoURI": "mongodb+srv://kjfreys:Sandrock@cluster0-9gknl.mongodb.net/test?retryWrites=true&w=majority",
+    "jwtSecret": "sl_myJwtSecret",
+    "jwtSession": {
+        "session": false
+    }
 }

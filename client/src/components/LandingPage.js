@@ -1,4 +1,5 @@
 import React from "react"
+import { Link } from "react-router-dom"
 import "./LandingPage.css"
 
 export default function LandingPage() {
@@ -10,6 +11,7 @@ export default function LandingPage() {
                 <p class="lp-desc">DevTickets intuitive toolset allows you to organize your projects work flow by establishing roles for your employees, assigning issues to your developers, and connecting your team with comments and personal messages.</p>
             </div>
             <div class="lp-right-side">
+                <Link to="/login">Login</Link>
                 <h2 class="lp-video-desc">Checkout how we can help you.</h2>
                 <div class="iframe-placeholder"></div>
             </div>
