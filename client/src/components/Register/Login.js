@@ -20,6 +20,8 @@ export default function Login(props) {
         props.login(user)
     }
 
+    if (props.user) props.history.push("/profile")
+
     return (
         <div id="login-page">
             <div className="login-container">

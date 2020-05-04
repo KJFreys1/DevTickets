@@ -1,31 +1,38 @@
 import React from "react"
 import "./Profile.css"
 
-export default function Profile() {
+export default function Profile(props) {
+    if (!props.user) props.history.push("/")
+
+    const { name } = props.user ? props.user : ''
+
     return (
         <div id="profile">
-            <div class="profile-left-side">
-                <h1 class="profile-greeting">Hello, ____</h1>
-                <div class="profile-container">
-                    <div class="profile-item-container">
-                        <h1 class="profile-item">My Projects</h1>
+            <div className="profile-left-side">
+                <h1 className="profile-greeting">Hello, {name}</h1>
+                <div className="profile-container">
+                    <div className="profile-item-container">
+                        <h1 className="profile-item">My Projects</h1>
                     </div>
-                    <div class="profile-item-container">
-                        <h1 class="profile-item">My Tickets</h1>
+                    <div className="profile-item-container">
+                        <h1 className="profile-item">My Tickets</h1>
                     </div>
-                    <div class="profile-item-container">
-                        <h1 class="profile-item">Inbox</h1>
+                    <div className="profile-item-container">
+                        <h1 className="profile-item">Inbox</h1>
                     </div>
                 </div>
             </div>
-            <div class="profile-right-side">
-                <div class="profile-pic-placeholder"></div>
-                <div class="profile-info-container">
-                    <div class="profile-info-item-container">
-                        <h1 class="profile-info-item">Edit Profile</h1>
+            <div className="profile-right-side">
+                <div className="profile-pic-placeholder"></div>
+                <div className="profile-info-container">
+                    <div className="profile-info-item-container">
+                        <h1 className="profile-info-item">Edit Profile</h1>
                     </div>
-                    <div class="profile-info-item-container">
-                        <h1 class="profile-info-item">Change Picture</h1>
+                    <div className="profile-info-item-container">
+                        <h1 className="profile-info-item">Change Picture</h1>
+                    </div>
+                    <div className="profile-info-item-container">
+                        <h1 className="profile-info-item">Logout</h1>
                     </div>
                 </div>
             </div>

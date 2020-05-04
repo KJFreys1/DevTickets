@@ -1,5 +1,5 @@
-import React from "react";
-import { Route } from "react-router-dom"
+import React, { useState, useEffect } from "react";
+import { Route, Redirect } from "react-router-dom"
 import LandingPage from "./components/LandingPage"
 import Login from "./components/Register/Login"
 import SignUp from "./components/Register/SignUp"
@@ -9,7 +9,22 @@ import "./App.css";
 import axios from "axios";
 
 function App() {
+  let [user, setUser] = useState()
+  let [visted, setVisited] = useState(false)
+
   const BASEURL = "http://dev-tickets.herokuapp.com"
+
+  useEffect(() => {
+    if (localStorage.token) {
+      axios.get(BASEURL + '/login/user', {
+        headers: {
+          "x-auth-token": localStorage.token
+        }
+      }).then(res => {
+        setUser(res.data)
+      })
+    }
+  }, [])
 
   const register = user => {
     axios.post(BASEURL+"/register", user).then(res => {
@@ -33,12 +48,15 @@ function App() {
     localStorage.clear()
   }
 
+  const redirectPath = user ? <Redirect to="/profile" /> : null
+
   return (
     <div>
-      <Route path="/" exact render={props => <LandingPage {...props} logout={logout}/>} />
-      <Route path="/login" exact render={props => <Login {...props} login={login} />} />
-      <Route path="/register" exact render={props => <SignUp {...props} register={register} /> } />
-      <Route path="/profile" exact render={() => <Profile />} />
+      {redirectPath}
+      <Route path="/" exact render={props => <LandingPage {...props} />} />
+      <Route path="/login" render={props => <Login {...props} user={user} login={login} />} />
+      <Route path="/register" render={props => <SignUp {...props} user={user} register={register} />} />
+      <Route path="/profile" render={props => <Profile {...props} logout={logout} user={user} />} />
     </div>
   );
 }

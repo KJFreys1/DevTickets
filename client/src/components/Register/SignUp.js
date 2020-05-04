@@ -26,6 +26,8 @@ export default function SignUp(props) {
         props.register(user)
     }
 
+    if (props.user) props.history.push("/profile")
+
     return (
         <div id="login-page">
             <div className="login-container">
