@@ -4,14 +4,20 @@ export default function Login(props) {
     let [email, updateEmail] = useState()
     let [password, updatePassword] = useState()
 
-    const handleEmail = e => {
+    const handleEmailChange = e => {
         e.preventDefault()
         updateEmail(e.target.value)
     }
 
+    const handlePasswordChange = e => {
+        e.preventDefault()
+        updatePassword(e.target.value)
+    }
+
     const handleSubmit = e => {
         e.preventDefault()
-        props.login(email)
+        const user = { email, password }
+        props.login(user)
     }
 
     return (
@@ -19,8 +25,8 @@ export default function Login(props) {
             <div className="login-container">
                 <h1>Login</h1>
                 <form onSubmit={handleSubmit}>
-                    <input placeholder="email" value={email} onChange={handleEmail}></input>
-                    <input placeholder="password"></input>
+                    <input placeholder="email" type="email" value={email} onChange={handleEmailChange} required></input>
+                    <input placeholder="password" type="password" value={password} onChange={handlePasswordChange} required></input>
                     <button type="submit">Test</button>
                 </form>
             </div>
