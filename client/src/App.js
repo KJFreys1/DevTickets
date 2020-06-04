@@ -69,10 +69,10 @@
 import React from "react";
 import NavBar from "./components/NavBar";
 import { Router, Route, Switch } from "react-router-dom";
-import Profile from "./components/Profile";
+import LandingPage from "./components/LandingPage"
+import Profile from "./components/Main/Profile/Profile";
 import PrivateRoute from "./components/PrivateRoute";
 import history from "./utils/history";
-// import { useAuth0 } from "./react-auth0-spa";
 
 function App() {
   return (
@@ -82,7 +82,7 @@ function App() {
           <NavBar />
         </header>
         <Switch>
-          <Route path="/" exact />
+          <Route path="/" exact component={LandingPage} />
           <PrivateRoute path="/profile" component={Profile} />
         </Switch>
       </Router>

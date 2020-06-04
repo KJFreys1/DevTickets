@@ -1,11 +1,16 @@
 import React from "react"
 import "./Profile.css"
+import { useAuth0 } from "../../../react-auth0-spa";
 
-export default function Profile(props) {
-    if (!props.user) props.history.push("/")
+export default function Profile() {
+    const { loading, user } = useAuth0();
 
-    const { name } = props.user ? props.user : ''
-    console.log(props.user)
+    if (loading || !user) {
+        return <div>Loading...</div>;
+    }
+
+    const { name } = user
+    console.log(name)
     return (
         <div id="profile">
             <div className="profile-left-side">
@@ -32,7 +37,7 @@ export default function Profile(props) {
                         <h1 className="profile-info-item">Change Picture</h1>
                     </div>
                     <div className="profile-info-item-container">
-                        <h1 className="profile-info-item" onClick={props.logout}>Logout</h1>
+                        <h1 className="profile-info-item">Logout</h1>
                     </div>
                 </div>
             </div>
