@@ -1,16 +1,56 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
+import { Route, Redirect } from "react-router-dom"
+import NewUser from "../../Register/NewUser"
 import "./Profile.css"
 import { useAuth0 } from "../../../react-auth0-spa";
+import axios from "axios"
 
 export default function Profile() {
-    const { loading, user } = useAuth0();
+    const { loading, user } = useAuth0()
+    let [devUser, setDevUser] = useState()
+    let [isFetching, setFetching] = useState(true)
 
+    const BASEURL = "http://dev-tickets.herokuapp.com"
+
+    const postNewUser = userInfo => {
+        axios.post(BASEURL + '/user', userInfo).then(postedUser => {
+            setDevUser(postedUser.data)
+        }).catch(err => console.log(err))
+    }
+
+    useEffect(() => {
+        if (user) {
+            axios.get(BASEURL + `/user/check_email/${user.email}`).then(existingUser => {
+                if (existingUser.data) {
+                    setDevUser(existingUser.data)
+                } else {
+                    setFetching(false)
+                }
+            })
+        }
+    }, [user])
+
+    //Conditions
+    //First to pass
     if (loading || !user) {
+        console.log(1)
         return <div>Loading...</div>;
     }
 
-    const { name } = user
-    console.log(name)
+    //Third to pass
+    if (!isFetching) {
+        console.log(3)
+        return <NewUser email={user.email} postNewUser={postNewUser} />
+    }
+
+    //Second to pass
+    if (!devUser) {
+        console.log(2)
+        return <div>loading...</div>
+    }
+
+    const { name } = devUser
+
     return (
         <div id="profile">
             <div className="profile-left-side">
@@ -40,6 +80,9 @@ export default function Profile() {
                         <h1 className="profile-info-item">Logout</h1>
                     </div>
                 </div>
+            </div>
+            <div className="routes">
+
             </div>
         </div>
     )

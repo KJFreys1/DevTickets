@@ -5,10 +5,16 @@ const User = require("../models/User")
 
 router.get("/", (req, res) => {
     User.find({})
-        .select("-password")
         .then(users => {
             res.json(users)
         })
+})
+
+router.get("/check_email/:email", (req, res) => {
+    User.findOne({ email: req.params.email })
+        .then(user => {
+            res.json(user)
+        }).catch(() => res.json(null))
 })
 
 router.post("/", (req, res) => {

@@ -12,7 +12,6 @@ describe("Routes", () => {
     let Project
     let MessageGroup
     let Message
-    let Event
     let Comment
     let app = require("../server")
 
@@ -24,7 +23,6 @@ describe("Routes", () => {
         Project = require("../models/Project")
         MessageGroup = require("../models/MessageGroup")
         Message = require("../models/Message")
-        Event = require("../models/Event")
         Comment = require("../models/Comment")
 
         User.deleteMany({}).then(() => {
@@ -32,9 +30,7 @@ describe("Routes", () => {
                 Project.deleteMany({}).then(() => {
                     MessageGroup.deleteMany({}).then(() => {
                         Message.deleteMany({}).then(() => {
-                            Event.deleteMany({}).then(() => {
-                                Comment.deleteMany({}).then(() => done())
-                            })
+                            Comment.deleteMany({}).then(() => done())
                         })
                     })
                 })
@@ -48,9 +44,7 @@ describe("Routes", () => {
                 Project.deleteMany({}).then(() => {
                     MessageGroup.deleteMany({}).then(() => {
                         Message.deleteMany({}).then(() => {
-                            Event.deleteMany({}).then(() => {
-                                Comment.deleteMany({})
-                            })
+                            Comment.deleteMany({})
                         })
                     })
                 })
@@ -79,6 +73,16 @@ describe("Routes", () => {
                         done()
                     })
             }).catch(err => console.log(err))
+        })
+
+        it("should find user by email", done => {
+            chai.request(app)
+                .get("/user/check_email/test@email.com")
+                .then(res => {
+                    expect(res.body.name).to.contain("Test name")
+                    expect(res.body.email).to.contain("test@email.com")
+                    done()
+                })
         })
     })
 

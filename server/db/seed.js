@@ -7,7 +7,6 @@ const User = require("../models/User")
 User.deleteMany({}).then(() => {
     User.create({
         name: "test",
-        email: "test email",
-        password: "hi"
+        email: "test email"
     }).then(() => console.log("created user"))
 })
