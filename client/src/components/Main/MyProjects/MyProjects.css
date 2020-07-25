@@ -1,0 +1,19 @@
+.proj-list-elem {
+    padding: 2vw;
+    background-color: lightgray;
+    margin: 3vw;
+    display: flex;
+}
+
+.proj-list-name {
+    width: 69vw;
+    margin: 0 1vw 0 0;
+    background-color: white;
+    overflow: none;
+}
+
+.proj-list-btn {
+    height: 5vh;
+    margin: auto 1vw;
+    width: 8vw;
+}
