@@ -1,5 +1,4 @@
-import React from "react";
-import { useState } from "react"
+import React, { useState } from "react"
 import NavBar from "./components/NavBar";
 import { Router, Route, Switch } from "react-router-dom";
 import PrivateRoute from "./components/PrivateRoute";
@@ -8,6 +7,7 @@ import history from "./utils/history";
 import LandingPage from "./components/LandingPage"
 import Profile from "./components/Main/Profile/Profile";
 import MyProjects from "./components/Main/MyProjects/MyProjects"
+import ProjectDetails from "./components/Main/ProjectDetails/ProjectDetails"
 
 function App() {
   let [devUser, setDevUser] = useState()
@@ -26,6 +26,7 @@ function App() {
           <Route path="/" exact component={LandingPage} />
           <PrivateRoute path="/profile" exact render={() => <Profile setDevUser={handleDevUserChange} devUser={devUser} />} />
           <PrivateRoute path="/myprojects" exact render={() => <MyProjects setDevUser={handleDevUserChange} devUser={devUser} />} />
+          <PrivateRoute path="/project/:pid" render={props => <ProjectDetails {...props} setDevUser={handleDevUserChange} devUser={devUser} />} />
         </Switch>
       </Router>
     </div>

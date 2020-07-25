@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react"
-import { Link, Route } from "react-router-dom"
+import { Link } from "react-router-dom"
 import NewUser from "../../Register/NewUser"
 import "./Profile.css"
-import { useAuth0 } from "../../../react-auth0-spa";
+import { useAuth0 } from "../../../react-auth0-spa"
 import axios from "axios"
 
 import Loading from '../../Loading'

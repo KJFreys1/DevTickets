@@ -1,5 +1,4 @@
-import React from 'react'
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth0 } from "../../../react-auth0-spa";
 import axios from 'axios'
@@ -20,7 +19,7 @@ export default function MyProjects(props) {
         return (
             <div className="proj-list-elem" key={proj._id}>
                 <h1 className="proj-list-name">{proj.name}</h1>
-                <button className="proj-list-btn">Details</button>
+                <Link to={`/project/${proj._id}`} className="proj-list-btn">Details</Link>
                 <button className="proj-list-btn">Tickets</button>
             </div>
         )
