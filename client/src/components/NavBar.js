@@ -1,5 +1,5 @@
 import React from "react"
-import { Link, Redirect } from "react-router-dom"
+import { Redirect } from "react-router-dom"
 import { useAuth0 } from "../react-auth0-spa"
 
 const NavBar = () => {

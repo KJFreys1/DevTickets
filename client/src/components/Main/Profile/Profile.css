@@ -63,3 +63,7 @@
     text-align: center;
     padding: 10px 0;
 }
+
+.profile-item:hover, .profile-info-item:hover {
+    cursor: pointer;
+}
