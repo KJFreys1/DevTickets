@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { Link, Redirect } from 'react-router-dom'
 import { useAuth0 } from "../../../react-auth0-spa"
 import axios from "axios"
 
@@ -8,9 +9,16 @@ import './ProjectDetails.css'
 
 export default function ProjectDetails(props) {
     const { user } = useAuth0()
+    let [redirectAfterDelete, setRedirect] = useState(null)
     let [project, setProject] = useState(false)
 
     const BASEURL = "http://dev-tickets.herokuapp.com"
+
+    const handleDeleteProject = () => {
+        axios.delete(BASEURL + `/project/${props.match.params.pid}`).then(() => {
+            setRedirect(<Redirect to="/myprojects" />)
+        })
+    }
 
     useEffect(() => {
         axios.get(BASEURL + `/project/pid/${props.match.params.pid}`).then(proj => {
@@ -25,9 +33,10 @@ export default function ProjectDetails(props) {
     console.log(project)
     return (
         <div id="proj-dets">
+            {redirectAfterDelete}
             <section className="proj-dets-left">
                 <div className="proj-dets-header">
-                    <h1>{project.name}</h1><button style={{backgroundColor: "red", color: "white", display: "block", margin: "auto"}}>TEST DELETE PROJECT</button>
+                    <h1>{project.name}</h1><button onClick={handleDeleteProject} style={{backgroundColor: "red", color: "white", display: "block", margin: "auto"}}>TEST DELETE PROJECT</button>
                     <button>Leave Project</button>
                     <p>{project.description}</p>
                 </div>

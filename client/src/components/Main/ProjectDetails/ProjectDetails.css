@@ -1,0 +1,13 @@
+#proj-dets {
+    display: flex;
+}
+
+.proj-dets-left {
+    width: 68vw;
+    padding: 2vw;
+}
+
+.proj-dets-right {
+    width: 28vw;
+    padding: 2vw;
+}

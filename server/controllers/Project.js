@@ -4,6 +4,7 @@ const router = express.Router()
 const User = require("../models/User")
 const Project = require("../models/Project")
 const Comment = require("../models/Comment")
+const Ticket = require("../models/Ticket")
 
 //@route        /project
 //@desc         GET all projects
