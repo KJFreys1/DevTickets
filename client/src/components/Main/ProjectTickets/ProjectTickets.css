@@ -1,0 +1,22 @@
+#proj-ticks {
+    padding: 5vh 0 0 5vw;
+}
+
+.proj-tick-container {
+    display: flex;
+}
+
+.proj-tick-box {
+    padding: 3vh 2vw;
+    margin: 1vh 3vw;
+    height: 80vh;
+    width: 30vw;
+    background-color: lightgray;
+}
+
+.proj-tick-elem {
+    padding: 15px;
+    width: 20vw;
+    margin: 10px 0;
+    background-color: gray;
+}

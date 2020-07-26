@@ -10,6 +10,7 @@ import MyProjects from "./components/Main/MyProjects/MyProjects"
 import MyTickets from "./components/Main/MyTickets/MyTickets"
 import ProjectDetails from "./components/Main/ProjectDetails/ProjectDetails"
 import TicketDetails from "./components/Main/TicketDetails/TicketDetails"
+import ProjectTickets from "./components/Main/ProjectTickets/ProjectTickets"
 
 function App() {
   let [devUser, setDevUser] = useState()
@@ -31,6 +32,7 @@ function App() {
           <PrivateRoute path="/mytickets" render={() => <MyTickets setDevUser={handleDevUserChange} devUser={devUser} />} />
           <PrivateRoute path="/project/:pid" render={props => <ProjectDetails {...props} setDevUser={handleDevUserChange} devUser={devUser} />} />
           <PrivateRoute path="/ticket/:tid" render={props => <TicketDetails {...props} setDevUser={handleDevUserChange} devUser={devUser} />} />
+          <PrivateRoute path="/ticketdisplay/:pid" render={props => <ProjectTickets {...props} setDevUser={handleDevUserChange} devUser={devUser} />} />
         </Switch>
       </Router>
     </div>

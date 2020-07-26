@@ -20,7 +20,7 @@ export default function MyProjects(props) {
             <div className="proj-list-elem" key={proj._id}>
                 <h1 className="proj-list-name">{proj.name}</h1>
                 <Link to={`/project/${proj._id}`} className="proj-list-btn">Details</Link>
-                <button className="proj-list-btn">Tickets</button>
+                <Link to={`/ticketdisplay/${proj._id}`} className="proj-list-btn">Tickets</Link>
             </div>
         )
     }
