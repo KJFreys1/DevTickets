@@ -7,6 +7,7 @@ import history from "./utils/history";
 import LandingPage from "./components/LandingPage"
 import Profile from "./components/Main/Profile/Profile";
 import MyProjects from "./components/Main/MyProjects/MyProjects"
+import MyTickets from "./components/Main/MyTickets/MyTickets"
 import ProjectDetails from "./components/Main/ProjectDetails/ProjectDetails"
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
           <Route path="/" exact component={LandingPage} />
           <PrivateRoute path="/profile" exact render={() => <Profile setDevUser={handleDevUserChange} devUser={devUser} />} />
           <PrivateRoute path="/myprojects" exact render={() => <MyProjects setDevUser={handleDevUserChange} devUser={devUser} />} />
+          <PrivateRoute path="/mytickets" render={() => <MyTickets setDevUser={handleDevUserChange} devUser={devUser} />} />
           <PrivateRoute path="/project/:pid" render={props => <ProjectDetails {...props} setDevUser={handleDevUserChange} devUser={devUser} />} />
         </Switch>
       </Router>

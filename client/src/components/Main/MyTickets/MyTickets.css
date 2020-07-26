@@ -1,0 +1,35 @@
+#my-ticks {
+    padding-left: 5vw;
+}
+
+.my-tick-title {
+    margin: 5vh auto;
+    text-align: center;
+}
+
+.my-tick-container {
+    display: flex;
+    overflow-x: scroll;
+}
+
+.my-tick-container section {
+    border: 2px solid black;
+    width: 23vw;
+    height: 68vh;
+    padding: 1vh 1vw;
+    margin: 5vh 3vw;
+}
+
+.my-tick-box-title {
+    text-align: center;
+}
+
+.my-tick-box {
+    background-color: lightgray;
+    padding: 10px;
+    margin: 10px;
+}
+
+.my-tick-name {
+    margin: 0;
+}

@@ -108,6 +108,7 @@ export default function ProjectDetails(props) {
                     <textarea className="proj-dets-inpt" value={userMessage} onChange={handleUserMessageChange}></textarea>
                     <button type="submit" className="proj-dets-submit">Submit</button>
                 </form>
+                <Link to="/profile">Back to profile</Link>
             </section>
         </div>
     )
