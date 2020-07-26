@@ -19,7 +19,7 @@ export default function MyTickets(props) {
                     <h1 className="my-tick-box-title">Requested</h1>
                     <div className="my-tick-box">
                         <h3 className="my-tick-name">Lorem ipsum dolor sit amet</h3>
-                        <button>Details</button>
+                        <Link to="ticket/1">Details</Link>
                         <button>Pick Up</button>
                     </div>
                     <div className="my-tick-box">

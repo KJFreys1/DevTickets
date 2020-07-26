@@ -1,0 +1,45 @@
+#tick-dets {
+    display: flex;
+    padding: 5vh 0 0 5vw;
+}
+
+#tick-dets section {
+    height: 80vh;
+    padding: 3vh 3vw;
+    margin: 3vh 3vw;
+}
+
+.tick-dets-left {
+    width: 48vw;
+    background-color: lightgray;
+}
+
+.tick-dets-right {
+    width: 28vw;
+    background-color: lightgray;
+}
+
+.tick-dets-btn-box {
+    background-color: gray;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+.tick-dets-desc-box {
+    background-color: gray;
+    padding: 15px;
+}
+
+.tick-dets-desc {
+    margin: 0;
+}
+
+.tick-dets-feed-title {
+    margin: 0;
+    text-align: center;
+    font-size: 5vh;
+}
+
+.tick-dets-feed-box {
+    height: 60vh;
+}
