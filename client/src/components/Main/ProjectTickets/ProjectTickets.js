@@ -9,6 +9,7 @@ import Loading from '../../Loading'
 export default function ProjectTickets(props) {
     return (
         <div id="proj-ticks">
+            <Link to="/profile">Back to profile</Link>
             <div className="proj-tick-container">
                 <div className="proj-tick-box">
                     <button>Blue</button>

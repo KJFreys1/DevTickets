@@ -61,7 +61,7 @@ export default function Profile(props) {
                         <Link to="/mytickets"><h1 className="profile-item">My Tickets</h1></Link>
                     </div>
                     <div className="profile-item-container">
-                        <h1 className="profile-item">Inbox</h1>
+                        <Link to="/inbox"><h1 className="profile-item">Inbox</h1></Link>
                     </div>
                 </div>
             </div>

@@ -11,6 +11,7 @@ import MyTickets from "./components/Main/MyTickets/MyTickets"
 import ProjectDetails from "./components/Main/ProjectDetails/ProjectDetails"
 import TicketDetails from "./components/Main/TicketDetails/TicketDetails"
 import ProjectTickets from "./components/Main/ProjectTickets/ProjectTickets"
+import Inbox from "./components/Main/Inbox/Inbox"
 
 function App() {
   let [devUser, setDevUser] = useState()
@@ -33,6 +34,7 @@ function App() {
           <PrivateRoute path="/project/:pid" render={props => <ProjectDetails {...props} setDevUser={handleDevUserChange} devUser={devUser} />} />
           <PrivateRoute path="/ticket/:tid" render={props => <TicketDetails {...props} setDevUser={handleDevUserChange} devUser={devUser} />} />
           <PrivateRoute path="/ticketdisplay/:pid" render={props => <ProjectTickets {...props} setDevUser={handleDevUserChange} devUser={devUser} />} />
+          <PrivateRoute path="/inbox" render={() => <Inbox setDevUser={handleDevUserChange} devUser={devUser} /> } />
         </Switch>
       </Router>
     </div>

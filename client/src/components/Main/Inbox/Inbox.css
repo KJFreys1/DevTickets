@@ -1,0 +1,27 @@
+#ix {
+    padding: 5vh 0 0 5vw;
+    display: flex;
+}
+
+#ix section {
+    padding: 2vh 2vw;
+    height: 80vh;
+    background-color: lightgray;
+}
+
+.ix-grp {
+    width: 30vw;
+}
+
+.ix-msg {
+    width: 50vw;
+    border-left: 2px solid black;
+}
+
+.ix-msg-pic-placeholder {
+    border-radius: 100%;
+    background-color: white;
+    height: 100px;
+    width: 100px;
+}
+
