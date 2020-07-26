@@ -9,8 +9,9 @@ import './ProjectDetails.css'
 
 export default function ProjectDetails(props) {
     const { user } = useAuth0()
-    let [redirectAfterDelete, setRedirect] = useState(null)
+    let [redirectPath, setRedirect] = useState(null)
     let [project, setProject] = useState(false)
+    let [memberListElem, setMemberListElem] = useState([])
 
     const BASEURL = "http://dev-tickets.herokuapp.com"
 
@@ -20,36 +21,41 @@ export default function ProjectDetails(props) {
         })
     }
 
+    const createMemberElem = (member, status) => {
+        return (
+            <div className="proj-dets-member" style={{backgroundColor: status}}>
+                <h1>{member}</h1>
+                <button>Remove*</button>
+            </div>
+        )
+    }
+
     useEffect(() => {
         axios.get(BASEURL + `/project/pid/${props.match.params.pid}`).then(proj => {
             setProject(proj.data)
+            setMemberListElem(proj.data.managers.map(member => {
+                return createMemberElem(member.name, "lightgreen")
+            }))
         })
     }, [user])
 
+    // Refactor so if no project, display error on page then redirect
     if (!user || !project) {
         return <Loading />
     }
 
-    console.log(project)
+    console.log(memberListElem)
     return (
         <div id="proj-dets">
-            {redirectAfterDelete}
+            {redirectPath}
             <section className="proj-dets-left">
                 <div className="proj-dets-header">
-                    <h1>{project.name}</h1><button onClick={handleDeleteProject} style={{backgroundColor: "red", color: "white", display: "block", margin: "auto"}}>TEST DELETE PROJECT</button>
+                    <h1>{project.name}</h1><button onClick={handleDeleteProject} style={{ backgroundColor: "red", color: "white", display: "block", margin: "auto" }}>TEST DELETE PROJECT</button>
                     <button>Leave Project</button>
                     <p>{project.description}</p>
                 </div>
                 <div className="proj-dets-team">
-                    <div className="proj-dets-member">
-                        <h1>Sam Jenkins</h1>
-                        <button>Remove*</button>
-                    </div>
-                    <div className="proj-dets-member">
-                        <h1>Eric Smith</h1>
-                        <button>Remove*</button>
-                    </div>
-                    <button>Add Developer*</button>
+                    {memberListElem}
                 </div>
             </section>
             <section className="proj-dets-right">

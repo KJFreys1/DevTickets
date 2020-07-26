@@ -99,6 +99,15 @@ describe("Routes for Project", () => {
             })
         })
 
+        it("should get a specific user", done => {
+            chai.request(app)
+                .get(`/user/uid/${testUID}`)
+                .then(res => {
+                    expect(res.body.name).to.equal("TEST USER")
+                    done()
+                })
+        })
+
         it("should get specifc project", done => {
             Project.find({}).then(projs => {
                 chai.request(app)

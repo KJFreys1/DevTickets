@@ -10,6 +10,13 @@ router.get("/", (req, res) => {
         })
 })
 
+router.get("/uid/:uid", (req, res) => {
+    User.findById(req.params.uid)
+        .then(user => {
+            res.json(user)
+        })
+})
+
 router.get("/check_email/:email", (req, res) => {
     User.findOne({ email: req.params.email })
         .then(user => {

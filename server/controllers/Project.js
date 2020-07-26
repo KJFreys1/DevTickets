@@ -35,11 +35,11 @@ router.get("/pid/:pid", (req, res) => {
         .populate("tickets")
         .populate({
             path: "developers",
-            select: "name, _id"
+            select: "name"
         })
         .populate({
             path: "managers",
-            select: "name, _id"
+            select: "name"
         })
         .then(proj => {
             res.json(proj)
