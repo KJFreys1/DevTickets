@@ -12,6 +12,8 @@ export default function ProjectDetails(props) {
     let [redirectPath, setRedirect] = useState(null)
     let [project, setProject] = useState(false)
     let [memberListElem, setMemberListElem] = useState([])
+    let [feedListElem, setFeedListElem] = useState([])
+    let [userMessage, setUserMessage] = useState("")
 
     const BASEURL = "http://dev-tickets.herokuapp.com"
 
@@ -21,30 +23,67 @@ export default function ProjectDetails(props) {
         })
     }
 
+    const handleUserMessageChange = e => {
+        setUserMessage(e.target.value)
+    }
+
+    const handleFormSubmit = e => {
+        e.preventDefault()
+        const comment = {
+            message: userMessage,
+            user: props.devUser._id
+        }
+        axios.post(BASEURL + `/project/comment/add/${project._id}`, comment).then(res => {
+            let tempFeedList = [...feedListElem]
+            tempFeedList.push(createFeedElem(res.data.comment.message, props.devUser.name))
+            setFeedListElem(tempFeedList)
+        })
+        setUserMessage("")
+    }
+
     const createMemberElem = (member, status) => {
         return (
-            <div className="proj-dets-member" style={{backgroundColor: status}}>
-                <h1>{member}</h1>
+            <div className="proj-dets-member" key={member._id} style={{backgroundColor: status}}>
+                <h1>{member.name}</h1>
                 <button>Remove*</button>
             </div>
         )
     }
 
+    const createFeedElem = (message, user) => {
+        return (
+            <div className="proj-dets-msg-left">
+                <p>{user}</p>
+                <p>{message}</p>
+            </div>
+        )
+    }
+
     useEffect(() => {
+        if (user && !props.devUser) {
+            axios.get(BASEURL + `/user/check_email/${user.email}`).then(existingUser => {
+                if (existingUser.data) {
+                    props.setDevUser(existingUser.data)
+                }
+            })
+        }
         axios.get(BASEURL + `/project/pid/${props.match.params.pid}`).then(proj => {
             setProject(proj.data)
             setMemberListElem(proj.data.managers.map(member => {
-                return createMemberElem(member.name, "lightgreen")
+                return createMemberElem(member, "lightgreen")
+            }))
+            setFeedListElem(proj.data.feed.map(feed => {
+                return createFeedElem(feed.message, feed.user.name)
             }))
         })
     }, [user])
 
     // Refactor so if no project, display error on page then redirect
-    if (!user || !project) {
+    if (!user || !project ) {
         return <Loading />
     }
 
-    console.log(memberListElem)
+    console.log(feedListElem)
     return (
         <div id="proj-dets">
             {redirectPath}
@@ -62,19 +101,11 @@ export default function ProjectDetails(props) {
                 <div className="proj-dets-feed-container">
                     <h1>Project Feed</h1>
                     <div className="proj-dets-feed">
-                        <div className="proj-dets-msg-left">
-                            <p>lorem ipsum sdad asda dsds ds a dsad</p>
-                        </div>
-                        <div className="proj-dets-msg-right">
-                            <p>lorem ipsum sdad asda dsds ds a dsad</p>
-                        </div>
-                        <div className="proj-dets-msg-left">
-                            <p>lorem ipsum sdad asda dsds ds a dsad</p>
-                        </div>
+                        {feedListElem}
                     </div>
                 </div>
-                <form className="proj-dets-form">
-                    <textarea className="proj-dets-inpt"></textarea>
+                <form className="proj-dets-form" onSubmit={handleFormSubmit}>
+                    <textarea className="proj-dets-inpt" value={userMessage} onChange={handleUserMessageChange}></textarea>
                     <button type="submit" className="proj-dets-submit">Submit</button>
                 </form>
             </section>

@@ -239,8 +239,8 @@ describe("Routes for Project", () => {
                     .post(`/project/comment/add/${testPID}`)
                     .send(newComment)
                     .then(res => {
-                        testCID = res.body.feed[0]
-                        expect(res.body.feed.length).to.equal(1)
+                        testCID = res.body.project.feed[0]
+                        expect(res.body.project.feed.length).to.equal(1)
                         done()
                     })
             })
@@ -258,7 +258,7 @@ describe("Routes for Project", () => {
                     .post(`/project/comment/add/${testPID}`)
                     .send(newComment)
                     .then(res => {
-                        expect(res.body.feed.length).to.equal(2)
+                        expect(res.body.project.feed.length).to.equal(2)
                         done()
                     })
             })

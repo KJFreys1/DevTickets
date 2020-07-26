@@ -63,6 +63,9 @@ export default function MyProjects(props) {
 
     const newProject = data => {
         axios.post(BASEURL + `/project/${props.devUser._id}`, data).then(proj => {
+            // let tempProjList = [...projListElem]
+            // tempProjList.push(createProjListElement(proj))
+            // setProjListElem(tempProjList)
             setProjListElem(projListElem.push(createProjListElement(proj)))
         }).catch(err => console.log(err))
     }
@@ -87,6 +90,7 @@ export default function MyProjects(props) {
         getProjects()
     }
 
+    console.log(projListElem)
     return (
         <div id="my-projs">
             <h1 className="my-proj-title">My Projects</h1>

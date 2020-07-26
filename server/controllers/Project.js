@@ -31,7 +31,10 @@ router.get("/uid/:uid", (req, res) => {
 //@desc         GET specific project by project id
 router.get("/pid/:pid", (req, res) => {
     Project.findById(req.params.pid)
-        .populate("feed")
+        .populate({
+            path: "feed",
+            populate: { path: "user" }
+        })
         .populate("tickets")
         .populate({
             path: "developers",
@@ -174,7 +177,7 @@ router.post("/comment/add/:pid", (req, res) => {
         Project.findById(req.params.pid).then(proj => {
             proj.feed.push(com._id)
             proj.save().then(() => {
-                res.json(proj)
+                res.json({ project: proj, comment: com })
             })
         })
     })
