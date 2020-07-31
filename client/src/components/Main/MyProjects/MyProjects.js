@@ -90,7 +90,6 @@ export default function MyProjects(props) {
         getProjects()
     }
 
-    console.log(projListElem)
     return (
         <div id="my-projs">
             <h1 className="my-proj-title">My Projects</h1>

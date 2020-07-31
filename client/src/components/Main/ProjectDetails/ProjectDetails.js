@@ -12,8 +12,10 @@ export default function ProjectDetails(props) {
     let [redirectPath, setRedirect] = useState(null)
     let [project, setProject] = useState(false)
     let [memberListElem, setMemberListElem] = useState([])
+    let [managerListElem, setManagerListElem] = useState([])
     let [feedListElem, setFeedListElem] = useState([])
     let [userMessage, setUserMessage] = useState("")
+    let [isManager, setIsManager] = useState(false)
 
     const BASEURL = "http://dev-tickets.herokuapp.com"
 
@@ -35,7 +37,7 @@ export default function ProjectDetails(props) {
         }
         axios.post(BASEURL + `/project/comment/add/${project._id}`, comment).then(res => {
             let tempFeedList = [...feedListElem]
-            tempFeedList.push(createFeedElem(res.data.comment.message, props.devUser.name))
+            tempFeedList.push(createFeedElem(res.data.comment.message, props.devUser.name, res.data.comment._id))
             setFeedListElem(tempFeedList)
         })
         setUserMessage("")
@@ -43,20 +45,38 @@ export default function ProjectDetails(props) {
 
     const createMemberElem = (member, status) => {
         return (
-            <div className="proj-dets-member" key={member._id} style={{backgroundColor: status}}>
+            <div className="proj-dets-member" key={member._id} style={{ backgroundColor: status }}>
                 <h1>{member.name}</h1>
                 <button>Remove*</button>
             </div>
         )
     }
 
-    const createFeedElem = (message, user) => {
+    const createFeedElem = (message, user, key) => {
         return (
-            <div className="proj-dets-msg-left">
+            <div className="proj-dets-msg-left" key={key}>
                 <p>{user}</p>
                 <p>{message}</p>
             </div>
         )
+    }
+
+    const fetchProjData = (devUser=props.devUser) => {
+        axios.get(BASEURL + `/project/pid/${props.match.params.pid}`).then(proj => {
+            setProject(proj.data)
+            setMemberListElem(proj.data.developers.map(member => {
+                return createMemberElem(member, "lightgreen")
+            }))
+            setManagerListElem(proj.data.managers.map(member => {
+                if (member._id === devUser._id && !isManager) {
+                    setIsManager(true)
+                }
+                return createMemberElem(member, "lightblue")
+            }))
+            setFeedListElem(proj.data.feed.map(feed => {
+                return createFeedElem(feed.message, feed.user.name, feed._id)
+            }))
+        })
     }
 
     useEffect(() => {
@@ -64,26 +84,21 @@ export default function ProjectDetails(props) {
             axios.get(BASEURL + `/user/check_email/${user.email}`).then(existingUser => {
                 if (existingUser.data) {
                     props.setDevUser(existingUser.data)
+                    fetchProjData(existingUser.data)
                 }
             })
+        } else if (user && props.devUser) {
+            console.log(user)
+            console.log(props.devUser)
+            fetchProjData()
         }
-        axios.get(BASEURL + `/project/pid/${props.match.params.pid}`).then(proj => {
-            setProject(proj.data)
-            setMemberListElem(proj.data.managers.map(member => {
-                return createMemberElem(member, "lightgreen")
-            }))
-            setFeedListElem(proj.data.feed.map(feed => {
-                return createFeedElem(feed.message, feed.user.name)
-            }))
-        })
     }, [user])
 
     // Refactor so if no project, display error on page then redirect
-    if (!user || !project ) {
+    if (!user || !project) {
         return <Loading />
     }
 
-    console.log(feedListElem)
     return (
         <div id="proj-dets">
             {redirectPath}
@@ -94,6 +109,7 @@ export default function ProjectDetails(props) {
                     <p>{project.description}</p>
                 </div>
                 <div className="proj-dets-team">
+                    {managerListElem}
                     {memberListElem}
                 </div>
             </section>
@@ -108,7 +124,8 @@ export default function ProjectDetails(props) {
                     <textarea className="proj-dets-inpt" value={userMessage} onChange={handleUserMessageChange}></textarea>
                     <button type="submit" className="proj-dets-submit">Submit</button>
                 </form>
-                <Link to="/profile">Back to profile</Link>
+                <Link to="/profile">Back to profile</Link><br></br>
+                <Link to="/myprojects">Back to my projects</Link>
             </section>
         </div>
     )
