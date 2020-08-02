@@ -72,6 +72,17 @@ describe("Routes for Project", () => {
         })
     })
 
+    describe("GET user", () => {
+        it("should get user by name", done => {
+            chai.request(app)
+                .get("/user/name/TEST USER")
+                .then(res => {
+                    expect(res.body.name).to.equal("TEST USER")
+                    done()
+                })
+        })
+    })
+
     describe("GET project", () => {
         it("should get all projects", done => {
             chai.request(app)

@@ -6,6 +6,7 @@ import axios from "axios"
 import Loading from '../../Loading'
 
 import './ProjectDetails.css'
+import PrivateRoute from '../../PrivateRoute'
 
 export default function ProjectDetails(props) {
     const { user } = useAuth0()
@@ -16,6 +17,7 @@ export default function ProjectDetails(props) {
     let [feedListElem, setFeedListElem] = useState([])
     let [userMessage, setUserMessage] = useState("")
     let [isManager, setIsManager] = useState(false)
+    let [addUser, setAddUser] = useState("")
 
     const BASEURL = "http://dev-tickets.herokuapp.com"
 
@@ -25,11 +27,26 @@ export default function ProjectDetails(props) {
         })
     }
 
+    const handleAddUserChange = e => {
+        setAddUser(e.target.value)
+    }
+
     const handleUserMessageChange = e => {
         setUserMessage(e.target.value)
     }
 
-    const handleFormSubmit = e => {
+    const handleMemberFormSubmit = e => {
+        e.preventDefault()
+        const newMember = addUser
+        axios.get(BASEURL + `/user/name/${newMember}`).then(res => {
+            axios.put(BASEURL + `/project/developer/${res.data._id}/${project._id}`).then(() => {
+                fetchProjData()
+            })
+        }).catch(err => alert("404: USER NOT FOUND"))
+        setAddUser("")
+    }
+
+    const handleFeedFormSubmit = e => {
         e.preventDefault()
         const comment = {
             message: userMessage,
@@ -88,8 +105,6 @@ export default function ProjectDetails(props) {
                 }
             })
         } else if (user && props.devUser) {
-            console.log(user)
-            console.log(props.devUser)
             fetchProjData()
         }
     }, [user])
@@ -112,6 +127,10 @@ export default function ProjectDetails(props) {
                     {managerListElem}
                     {memberListElem}
                 </div>
+                <form className="proj-dets-member-form" onSubmit={handleMemberFormSubmit}>
+                    <input className="proj-dets-member-input" value={addUser} onChange={handleAddUserChange}></input>
+                    <button className="proj-dets-member-submit" type="submit">Submit</button>
+                </form>
             </section>
             <section className="proj-dets-right">
                 <div className="proj-dets-feed-container">
@@ -120,9 +139,9 @@ export default function ProjectDetails(props) {
                         {feedListElem}
                     </div>
                 </div>
-                <form className="proj-dets-form" onSubmit={handleFormSubmit}>
-                    <textarea className="proj-dets-inpt" value={userMessage} onChange={handleUserMessageChange}></textarea>
-                    <button type="submit" className="proj-dets-submit">Submit</button>
+                <form className="proj-dets-feed-form" onSubmit={handleFeedFormSubmit}>
+                    <textarea className="proj-dets-feed-input" value={userMessage} onChange={handleUserMessageChange}></textarea>
+                    <button type="submit" className="proj-dets-feed-submit">Submit</button>
                 </form>
                 <Link to="/profile">Back to profile</Link><br></br>
                 <Link to="/myprojects">Back to my projects</Link>
