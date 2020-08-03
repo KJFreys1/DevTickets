@@ -37,7 +37,6 @@ router.get("/check_email/:email", (req, res) => {
 
 router.post("/", (req, res) => {
     User.create(req.body)
-        .select("-password")
         .then(user => {
             res.json(user)
         })

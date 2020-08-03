@@ -11,12 +11,12 @@ import PrivateRoute from '../../PrivateRoute'
 export default function ProjectDetails(props) {
     const { user } = useAuth0()
     let [redirectPath, setRedirect] = useState(null)
-    let [project, setProject] = useState(false)
+    let [project, setProject] = useState()
     let [memberListElem, setMemberListElem] = useState([])
     let [managerListElem, setManagerListElem] = useState([])
     let [feedListElem, setFeedListElem] = useState([])
     let [userMessage, setUserMessage] = useState("")
-    let [isManager, setIsManager] = useState(false)
+    // let [isManager, setIsManager] = useState(false)
     let [addUser, setAddUser] = useState("")
 
     const BASEURL = "http://dev-tickets.herokuapp.com"
@@ -60,11 +60,21 @@ export default function ProjectDetails(props) {
         setUserMessage("")
     }
 
-    const createMemberElem = (member, status) => {
+    const handleRemoveMember = (member, pid) => {
+        console.log(props.devUser)
+        axios.put(BASEURL + `/project/remove/${member._id}/${pid}`).then(() => {
+            fetchProjData()
+        })
+    }
+
+    const createMemberElem = (member, status, isManager, { _id }) => {
         return (
             <div className="proj-dets-member" key={member._id} style={{ backgroundColor: status }}>
                 <h1>{member.name}</h1>
-                <button>Remove*</button>
+                {isManager 
+                    ? <button onClick={() => handleRemoveMember(member, _id)}>Remove</button> 
+                    : null
+                }
             </div>
         )
     }
@@ -79,16 +89,20 @@ export default function ProjectDetails(props) {
     }
 
     const fetchProjData = (devUser=props.devUser) => {
+        let isManager = false
+        devUser.projects_managed.forEach(proj => {
+            if (proj === props.match.params.pid) {
+                isManager = true
+            }
+        })
         axios.get(BASEURL + `/project/pid/${props.match.params.pid}`).then(proj => {
+            console.log(proj.data)
             setProject(proj.data)
             setMemberListElem(proj.data.developers.map(member => {
-                return createMemberElem(member, "lightgreen")
+                return createMemberElem(member, "lightgreen", isManager, proj.data)
             }))
             setManagerListElem(proj.data.managers.map(member => {
-                if (member._id === devUser._id && !isManager) {
-                    setIsManager(true)
-                }
-                return createMemberElem(member, "lightblue")
+                return createMemberElem(member, "lightblue", isManager, proj.data)
             }))
             setFeedListElem(proj.data.feed.map(feed => {
                 return createFeedElem(feed.message, feed.user.name, feed._id)
@@ -143,6 +157,8 @@ export default function ProjectDetails(props) {
                     <textarea className="proj-dets-feed-input" value={userMessage} onChange={handleUserMessageChange}></textarea>
                     <button type="submit" className="proj-dets-feed-submit">Submit</button>
                 </form>
+                {/* <h1>{isManager ? "manager" : "developer"}</h1> */}
+                <button onClick={() => fetchProjData()}>here</button>
                 <Link to="/profile">Back to profile</Link><br></br>
                 <Link to="/myprojects">Back to my projects</Link>
             </section>

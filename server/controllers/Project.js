@@ -74,20 +74,20 @@ router.put("/:pid", (req, res) => {
     })
 })
 
-//@route        /project/developer/:uid/:pid
+//@route        /project/remove/:uid/:pid
 //@desc         REMOVE user from project
 router.put("/remove/:uid/:pid", (req, res) => {
     User.findById(req.params.uid).then(user => {
         Project.findById(req.params.pid).then(proj => {
             let uidx = user.projects_joined.indexOf(req.params.pid)
-            user.projects_joined.splice(uidx, 1)
+            uidx > -1 ? user.projects_joined.splice(uidx, 1) : null
             uidx = user.projects_managed.indexOf(req.params.pid)
-            user.projects_managed.splice(uidx, 1)
+            uidx > -1 ? user.projects_managed.splice(uidx, 1) : null
             user.save().then(() => {
                 let pidx = proj.developers.indexOf(req.params.uid)
-                proj.developers.splice(pidx, 1)
+                pidx > -1 ? proj.developers.splice(pidx, 1) : null
                 pidx = proj.managers.indexOf(req.params.uid)
-                proj.managers.splice(pidx, 1)
+                pidx > -1 ? proj.managers.splice(pidx, 1) : null
                 proj.save().then(() => {
                     res.json(proj)
                 })
